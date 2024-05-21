@@ -1,7 +1,7 @@
 import java.time.LocalDateTime;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Teacher teacher1 = new Teacher("Hamidreza", "Mahdiyani");
         Teacher teacher2 = new Teacher("Mojtaba", "Vahidi");
         Course course1 = new Course("logic circuits", teacher1, 3, "2024/09/12");

@@ -10,6 +10,7 @@ public class Course {
     private List<Student> students;
     private boolean isActive = false;
     private List<String> exercises;
+    private List<Assignment> assignments;
     private int numberOfExercises;
     private String examinationDate;
     private boolean hasActiveProjects;
@@ -86,6 +87,17 @@ public class Course {
 
         exercises.add(exercise);
         numberOfExercises++;
+    }
+
+    public void addassignment(Assignment assignment){
+        assignments.add(assignment);
+    }
+    public void removeAssignment(Assignment assignment){
+        if (assignments.contains(assignment)) {
+            assignments.remove(assignment);
+        }else{
+            System.out.println("there is no such Assignment in this course");
+        }
     }
 
     public void removeExercise(String exercise)throws Exception {
