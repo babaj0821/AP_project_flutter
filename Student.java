@@ -20,14 +20,26 @@ public class Student {
         this.currentSemesterAverage = 0.0;
     }
 
-    public void addCourse(Course courseName) {
+    public void addCourse(Course courseName) throws Exception{
+        if (courseName == null) throw new NullPointerException("this course is empty");
+
+        if (enrollmentCourses.contains(courseName)) {
+            System.out.println("you have already signed up in this course");
+            return;
+        }
         enrollmentCourses.add(courseName);
         numberOfCourses++;
     }
 
     public void removeCourse(Course courseName) {
-        enrollmentCourses.remove(courseName);
-        numberOfCourses--;
+        if (courseName == null) throw new NullPointerException("this course is empty");
+
+        if (enrollmentCourses.contains(courseName)) {
+            enrollmentCourses.remove(courseName);
+            numberOfCourses--;
+        }else{
+            System.out.println("you have not added this course to your courses");
+        }
     }
 
     public void printEnrollmentCourses() {
@@ -59,6 +71,8 @@ public class Student {
                 }
             }
         }
+        if (len == 0)throw new ArithmeticException("you are not in any course");
+        
         this.totalAverageGrade = len == 0 ? 0 : (double) sum / len;
     }
 }
