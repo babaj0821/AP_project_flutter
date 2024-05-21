@@ -31,7 +31,7 @@ public class Student {
         numberOfCourses++;
     }
 
-    public void removeCourse(Course courseName) {
+    public void removeCourse(Course courseName) throws Exception{
         if (courseName == null) throw new NullPointerException("this course is empty");
 
         if (enrollmentCourses.contains(courseName)) {
@@ -72,7 +72,7 @@ public class Student {
             }
         }
         if (len == 0)throw new ArithmeticException("you are not in any course");
-        
+
         this.totalAverageGrade = len == 0 ? 0 : (double) sum / len;
     }
 }

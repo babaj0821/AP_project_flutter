@@ -8,7 +8,7 @@ public class Course {
     private Teacher teacher;
     private int numberOfUnits;
     private List<Student> students;
-    private boolean isActive;
+    private boolean isActive = false;
     private List<String> exercises;
     private int numberOfExercises;
     private String examinationDate;
@@ -21,7 +21,6 @@ public class Course {
         this.teacher = teacher;
         this.numberOfUnits = numberOfUnits;
         this.students = new ArrayList<>();
-        this.isActive = true;
         this.exercises = new ArrayList<>();
         this.numberOfExercises = 0;
         this.examinationDate = examinationDate;
@@ -29,30 +28,51 @@ public class Course {
         this.numberOfRegisteredStudents = 0;
         this.grades = new HashMap<>();
     }
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
 
-    public void addStudent(Student student) {
+    public void addStudent(Student student) throws Exception{
+        if (student == null)throw new NullPointerException("you have not enterd any student");
+        if (isActive == false) throw new Exception("please activate the course");
+
+        if (students.contains(student)) {
+            System.out.println("this student has been sighend up");
+            return;
+        }
         students.add(student);
         numberOfRegisteredStudents++;
     }
 
-    public void removeStudent(Student student) {
-        students.remove(student);
-        numberOfRegisteredStudents--;
-        grades.remove(student);
+    public void removeStudent(Student student) throws Exception{
+        if (student == null)throw new NullPointerException("you have not enterd any student");
+        if (students.contains(student)) {
+            students.remove(student);
+            numberOfRegisteredStudents--;
+            grades.remove(student);
+        }else{
+            System.out.println("this student is not in this course");
+        }
     }
 
-    public void assignGrade(Student student, double grade) {
+    public void assignGrade(Student student, double grade)throws Exception {
+        if (student == null)throw new NullPointerException("you have not eneter any student");
         grades.put(student, grade);
     }
 
     public double findHighestGrade() {
-        double highestGrade = 0.0;
-        for (double grade : grades.values()) {
-            if (grade > highestGrade) {
-                highestGrade = grade;
+        if (students.size() > 0) {
+            double highestGrade = 0.0;
+            for (double grade : grades.values()) {
+                if (grade > highestGrade) {
+                    highestGrade = grade;
+                }
             }
+            return highestGrade;
+        }else{
+            System.out.println("this class is empty");
+            return 0.0;
         }
-        return highestGrade;
     }
 
     public void printStudents() {
@@ -61,12 +81,15 @@ public class Course {
         }
     }
 
-    public void addExercise(String exercise) {
+    public void addExercise(String exercise)throws Exception {
+        if (exercise == null)throw new NullPointerException("this exercise is empty");
+
         exercises.add(exercise);
         numberOfExercises++;
     }
 
-    public void removeExercise(String exercise) {
+    public void removeExercise(String exercise)throws Exception {
+        if (exercise == null)throw new NullPointerException("this exercise is empty");
         exercises.remove(exercise);
         numberOfExercises--;
     }
