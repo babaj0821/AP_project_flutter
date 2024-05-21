@@ -1,11 +1,14 @@
 import java.time.LocalDateTime;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+
+    public static void main(String[] args) throws Exception{
         Teacher teacher1 = new Teacher("Hamidreza", "Mahdiyani");
         Teacher teacher2 = new Teacher("Mojtaba", "Vahidi");
         Course course1 = new Course("logic circuits", teacher1, 3, "2024/09/12");
         Course course2 = new Course("AP", teacher2, 3, "2024/09/15");
+        course1.setActive(true);
+        course2.setActive(true);
         Student student1 = new Student("S001");
         Student student2 = new Student("S002");
         student1.addCourse(course1);
@@ -42,4 +45,5 @@ public class Main {
         Assignment assignment = new Assignment(course2, "java project", deadline);
         System.out.println("Time left until deadline: " + assignment.timeLeftUntilDeadline());
     }
-}
+
+    }
