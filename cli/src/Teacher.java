@@ -4,23 +4,25 @@ import java.util.List;
 
 public class Teacher {
     private String name;
+    private String teacherID;
     private String surname;
     private int numberOfCourses;
     private List<Course> courses;
 
-    public Teacher(String name, String surname) throws Exception {
+    public Teacher(String name, String surname , String teacherID) throws Exception {
         this.name = name;
         this.surname = surname;
+        this.teacherID = teacherID;
         this.numberOfCourses = 0;
         this.courses = new ArrayList<>();
         Admin a = Admin.getAdmin();
         a.addteachertolist(this);
     }
-    public String getName(){
-        return name;
+    public String getTeacherID() {
+        return teacherID;
     }
-    public String getSurname(){
-        return surname;
+    public List<Course> getCourses() {
+        return courses;
     }
 
     public void addStudentToCourse(Student student, String courseName) throws Exception {
@@ -77,7 +79,7 @@ public class Teacher {
         }
         return null;
     }
-    public void addassignment(Course course , Assignment assignment)throws Exception{
+    public void giveaddassignment(Course course , Assignment assignment)throws Exception{
         if (course == null || assignment == null) throw new NullPointerException("please enter a course or assignment");
 
         if (courses.contains(course)) {

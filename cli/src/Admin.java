@@ -47,9 +47,9 @@ public class Admin {
             return;
         }
     }
-    public void removeTeacherfromcourse(String name, String surname , String codecourse)throws Exception{
-        if (name == null || surname == null || codecourse == null)throw new NullPointerException();
-        int teachernum = findteacher(name, surname);
+    public void removeTeacherfromcourse(String teacherid , String codecourse)throws Exception{
+        if (teacherid == null|| codecourse == null)throw new NullPointerException();
+        int teachernum = findteacher(teacherid);
         int coursenum = findcourse(codecourse);
         if (teachernum != -1 && coursenum != -1) {
             if (courses.get(coursenum).getTeacher().equals(teachers.get(teachernum))) {
@@ -72,7 +72,7 @@ public class Admin {
     public void addStudenttocourse(String studentId , String codecourse) throws Exception{
         if (studentId == null || codecourse == null) throw new NullPointerException();
         int studentnum = findstudent(studentId);
-        int coursenum =findcourse(codecourse);
+        int coursenum = findcourse(codecourse);
         if (studentnum != -1 && coursenum != -1) {
             if (courses.get(coursenum).getStudents().contains(students.get(studentnum))) {
                System.out.println("this student is already in this course"); 
@@ -92,18 +92,19 @@ public class Admin {
         }
 
     }
-    public void setTeachertocourse(String name, String surname , String codecourse) throws Exception{
-        if (name == null || surname == null || codecourse == null)throw new NullPointerException();
-        int teachernum = findteacher(name, surname);
+    public void setTeachertocourse(String teacherID , String codecourse) throws Exception{
+        if (teacherID == null || codecourse == null)throw new NullPointerException();
+        int teachernum = findteacher(teacherID);
         int coursenum = findcourse(codecourse);
         if (teachernum != -1 && coursenum != -1) {
-            if (courses.get(coursenum).getTeacher().equals(teachers.get(teachernum))) {
-                System.out.println("this teacher is already the teache of the course");
-            }else{
+            if (courses.get(coursenum).getTeacher() == null) {
                 courses.get(coursenum).setTeacher(teachers.get(teachernum));
                 teachers.get(teachernum).addCourse(courses.get(coursenum));
                 System.out.println("teacher has been set as the newone");
                 return;
+            }
+            if (courses.get(coursenum).getTeacher().equals(teachers.get(teachernum))) {
+                System.out.println("this teacher is already the teacher of the course");
             }
         }else if(coursenum != -1){
             System.out.println("course doesnt exist");
@@ -119,7 +120,7 @@ public class Admin {
         int assignmentnum = findassignment(assignmentName);
         int coursecodenum = findcourse(coursecode);
 
-        if (assignmentnum != -1 && coursecodenum != -1) {
+        if (assignmentnum == -1 && coursecodenum != -1) {
             if (assignments.get(assignmentnum).getCourseName().equals(courses.get(coursecodenum))) {
                 System.out.println("this assignment is already in this course");
                 return;
@@ -172,13 +173,13 @@ public class Admin {
             System.out.println("course doesnt exist");
         }
     }
-    public void newCourse(String courseName, String name, String surname , 
+    public void newCourse(String courseName, String teacherId , 
     int numberOfUnits, String examinationDate , String codecourse)throws Exception{
 
-        if (courseName == null || name == null || surname == null ||
+        if (courseName == null || teacherId == null ||
         examinationDate == null || codecourse == null)throw new NullPointerException();
 
-        int teachernum = findteacher(name, surname);
+        int teachernum = findteacher(teacherId);
 
         if (numberOfUnits > 0 && teachernum != -1) {
             Course c = new Course(courseName, teachers.get(teachernum), numberOfUnits, examinationDate, codecourse);
@@ -193,7 +194,7 @@ public class Admin {
     }
     public int findstudent(String studentId){
         for(int i = 0 ; i < students.size() ; i++){
-            if (studentId == students.get(i).getStudentId()) {
+            if (studentId.equals(students.get(i).getStudentId())) {
                 return i;
             }
         }
@@ -207,13 +208,21 @@ public class Admin {
         }
         return -1;
     }
-    public int findteacher(String name, String surname){
+    public int findteacher(String teacheId){
         for(int i = 0 ;i < teachers.size() ; i++){
-            if (teachers.get(i).getName().equals(name) && teachers.get(i).getSurname().equals(surname)) {
+            if (teachers.get(i).getTeacherID().equals(teacheId) ) {
                 return i;
             }
         }
         return -1;
+    }
+    public static Teacher findtaecher(String teacheId){
+        for(int i = 0 ;i < teachers.size() ; i++){
+            if (teachers.get(i).getTeacherID().equals(teacheId) ) {
+                return teachers.get(i);
+            }
+        }
+        return null;
     }
     public int findassignment(String assignmentName){
         for(int i = 0 ; i < assignments.size() ; i++){
@@ -222,6 +231,12 @@ public class Admin {
             }
         }
         return -1;
+    }
+    public void setCourseactive(String codeofcourse)throws Exception{
+        if (codeofcourse == null) throw new NullPointerException();
+        int codeofcoursenum = findcourse(codeofcourse);
+        courses.get(codeofcoursenum).setActive(true);
+        return;
     }
     public static Admin getAdmin(){
         if (instance == null) {
