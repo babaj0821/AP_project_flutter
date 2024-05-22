@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -6,7 +7,6 @@ public class Admin {
     private static List<Teacher> teachers = new ArrayList<>();
     private static List<Course> courses = new ArrayList<>();
     private static List<Assignment> assignments = new ArrayList<>();
-    private static List<String> exercise = new ArrayList<>();
     private static Admin instance;
     public void addstudenttolist(Student s)throws Exception{
         if (s == null) throw new NullPointerException();
@@ -30,13 +30,20 @@ public class Admin {
         int studentnum = findstudent(studentId);
         int coursenum =findcourse(codecourse);
         if (studentnum != -1 && coursenum != -1) {
-            courses.get(coursenum).removeStudent(students.get(studentnum));
-            System.out.println("student has been removed");
-            return;
+            if (courses.get(coursenum).getStudents().contains(students.get(studentnum))) {
+                courses.get(coursenum).removeStudent(students.get(studentnum));
+                System.out.println("student has been removed");
+                return;
+            }else{
+                System.out.println("this student is not in this class");
+                return;
+            }
         }else if(coursenum == -1){
             System.out.println("course doesnt exist");
+            return;
         }else{
             System.out.println("student doesnt exist");
+            return;
         }
     }
     public void removeTeacherfromcourse(String name, String surname , String codecourse)throws Exception{
@@ -50,11 +57,14 @@ public class Admin {
                 return;
             }else{
                 System.out.println("this teacher is not responsible for this course");
+                return;
             }
         }else if(coursenum == -1){
             System.out.println("course doesnt exist");
+            return;
         }else{
             System.out.println("teacher doesnt exist");
+            return;
         }
     }
     public void addStudenttocourse(String studentId , String codecourse) throws Exception{
@@ -62,12 +72,20 @@ public class Admin {
         int studentnum = findstudent(studentId);
         int coursenum =findcourse(codecourse);
         if (studentnum != -1 && coursenum != -1) {
-            courses.get(coursenum).addStudent(students.get(studentnum));
-            System.out.println("student has been added");
+            if (courses.get(coursenum).getStudents().contains(students.get(studentnum))) {
+               System.out.println("this student is already in this course"); 
+               return;
+            }else{
+                courses.get(coursenum).addStudent(students.get(studentnum));
+                System.out.println("student has been added");
+                return;
+            }
         }else if(coursenum == -1){
             System.out.println("course doesnt exist");
+            return;
         }else{
             System.out.println("student doesnt exist");
+            return;
         }
 
     }
@@ -76,25 +94,63 @@ public class Admin {
         int teachernum = findteacher(name, surname);
         int coursenum = findcourse(codecourse);
         if (teachernum != -1 && coursenum != -1) {
-            courses.get(coursenum).setTeacher(teachers.get(teachernum));
-            System.out.println("teacher has been set as the newone");
-            return;
+            if (courses.get(coursenum).getTeacher().equals(teachers.get(teachernum))) {
+                System.out.println("this teacher is already the teache of the course");
+            }else{
+                courses.get(coursenum).setTeacher(teachers.get(teachernum));
+                System.out.println("teacher has been set as the newone");
+                return;
+            }
         }else if(coursenum != -1){
             System.out.println("course doesnt exist");
+            return;
         }else{
             System.out.println("teacher doesnt exist");
+            return;
         }
     }
-    public void addExercise(){
+    public void addAssignmenttocourse(String coursecode, String assignmentName) throws Exception{
+        if(coursecode == null || assignmentName == null)throw new NullPointerException();
 
-    }
-    public void removeExercise(){
+        int assignmentnum = findassignment(assignmentName);
+        int coursecodenum = findcourse(coursecode);
 
+        if (assignmentnum != -1 && coursecodenum != -1) {
+            if (assignments.get(assignmentnum).getCourseName().equals(courses.get(coursecodenum))) {
+                System.out.println("this assignment is already in this course");
+                return;
+            }else{
+                courses.get(coursecodenum).addassignment(assignments.get(assignmentnum));
+                System.out.println("the assingment has been given");
+                return;
+            }
+        }else if(coursecodenum == -1){
+            System.out.println("course doesnt exist");
+            return;
+        }else{
+            System.out.println("assingment doesnt exist");
+            return;
+        }
     }
-    public void addAssignment(){
+    public void removeAssignment(String coursecode, String assignmentName){
+        if(coursecode == null || assignmentName == null)throw new NullPointerException();
 
-    }
-    public void removeAssignment(){
+        int assignmentnum = findassignment(assignmentName);
+        int coursecodenum = findcourse(coursecode);
+
+        if (assignmentnum != -1 && coursecodenum != -1) {
+            if (assignments.get(assignmentnum).getCourseName().equals(courses.get(coursecodenum))) {
+                courses.get(coursecodenum).getAssignments().remove(assignments.get(assignmentnum));
+            }else{
+                System.out.println("this assignment is not related to this course");
+            }
+        }else if(coursecodenum == -1){
+            System.out.println("course doesnt exist");
+            return;
+        }else{
+            System.out.println("assingment doesnt exist");
+            return;
+        }
 
     }
     public void removeCourse(String codecourse)throws Exception{
@@ -112,7 +168,7 @@ public class Admin {
             System.out.println("course doesnt exist");
         }
     }
-    public void addCourse(String courseName, String name, String surname , 
+    public void newCourse(String courseName, String name, String surname , 
     int numberOfUnits, String examinationDate , String codecourse)throws Exception{
 
         if (courseName == null || name == null || surname == null ||
@@ -123,12 +179,10 @@ public class Admin {
         if (numberOfUnits > 0 && teachernum != -1) {
             Course c = new Course(courseName, teachers.get(teachernum), numberOfUnits, examinationDate, codecourse);
             teachers.get(teachernum).addCourse(c);
-            courses.add(c);
             System.out.println("the course has been added");
         }else if(numberOfUnits > 0 && teachernum == -1){
-            Course c = new Course(courseName, teachers.get(teachernum), numberOfUnits, examinationDate, codecourse);
-            courses.add(c);
-            System.out.println("this course dosent have any teacher add one");
+            Course c = new Course(courseName, null, numberOfUnits, examinationDate, codecourse);
+            System.out.println("this course dosent have any teacher add one to be shown to students");
         }else if(numberOfUnits <= 0){
             throw new Exception("the course unit must be above 0");
         }
@@ -152,6 +206,14 @@ public class Admin {
     public int findteacher(String name, String surname){
         for(int i = 0 ;i < teachers.size() ; i++){
             if (teachers.get(i).getName().equals(name) && teachers.get(i).getSurname().equals(surname)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    public int findassignment(String assignmentName){
+        for(int i = 0 ; i < assignments.size() ; i++){
+            if (assignments.get(i).getAssignmentName().equals(assignmentName)) {
                 return i;
             }
         }

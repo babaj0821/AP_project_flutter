@@ -15,6 +15,12 @@ public class Assignment {
         Admin a = Admin.getAdmin();
         a.addassignmenttolist(this);
     }
+    public String getAssignmentName() {
+        return assignmentName;
+    }
+    public Course getCourseName() {
+        return courseName;
+    }
 
     public String timeLeftUntilDeadline() {
         LocalDateTime now = LocalDateTime.now();

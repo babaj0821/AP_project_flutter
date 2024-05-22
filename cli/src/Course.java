@@ -48,6 +48,9 @@ public class Course {
     public String getCodecourse() {
         return codecourse;
     }
+    public List<Assignment> getAssignments() {
+        return assignments;
+    }
 
     public void addStudent(Student student) throws Exception{
         if (student == null)throw new NullPointerException("you have not enterd any student");
