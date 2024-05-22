@@ -1,49 +1,120 @@
 import java.time.LocalDateTime;
+import java.util.*;
 
 public class Main {
 
     public static void main(String[] args) throws Exception{
-        Teacher teacher1 = new Teacher("Hamidreza", "Mahdiyani");
-        Teacher teacher2 = new Teacher("Mojtaba", "Vahidi");
-        Course course1 = new Course("logic circuits", teacher1, 3, "2024/09/12" , "46844");
-        Course course2 = new Course("AP", teacher2, 3, "2024/09/15" , "4697949");
-        course1.setActive(true);
-        course2.setActive(true);
-        Student student1 = new Student("S001");
-        Student student2 = new Student("S002");
-        student1.addCourse(course1);
-        student1.addCourse(course2);
-        student2.addCourse(course1);
-        student2.addCourse(course2);
-        System.out.println("Enrollment courses of student1:");
-        student1.printEnrollmentCourses();
-        System.out.println("Enrollment courses of student2:");
-        student2.printEnrollmentCourses();
-        course1.addStudent(student1);
-        course1.addStudent(student2);
-        course2.addStudent(student1);
-        course2.addStudent(student2);
-        course1.addExercise("problemser#1");
-        course2.addExercise("problemser#1");
-        teacher1.addCourse(course1);
-        teacher2.addCourse(course2);
-        teacher1.assignGradeToStudent(student1, "logic circuits", 12);
-        teacher1.assignGradeToStudent(student2, "logic circuits", 10);
-        teacher2.assignGradeToStudent(student1, "AP", 19);
-        teacher2.assignGradeToStudent(student2, "AP", 14);
-        System.out.println("highest grade in " + course1.getCourseName());
-        System.out.println(course1.findHighestGrade());
-        System.out.println("highest grade in " + course2.getCourseName());
-        System.out.println(course2.findHighestGrade());
-        student1.findTotalAvg();
-        student2.findTotalAvg();
-        System.out.println("student 1 avg grade: ");
-        student1.printTotalAverage();
-        System.out.println("student 2 avg grade: ");
-        student2.printTotalAverage();
-        LocalDateTime deadline = LocalDateTime.of(2025, 4, 30, 23, 59);
-        Assignment assignment = new Assignment(course2, "java project", deadline);
-        System.out.println("Time left until deadline: " + assignment.timeLeftUntilDeadline());
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("ٌWelcome\nso who are you? Admin/Teacher/exit");
+        String identity = input.next();
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+        while (!identity.equals("exit")) {
+            if (identity.equals("Admin")) {
+                String command = "";
+                while (!command.equals("9")) {
+                    Admin admin = new Admin();
+                    System.out.println("1.removeStudentFromCourse\n2.removeTeacherfromcourse\n3.addStudenttocourse\n4.setTeachertocourse");
+                    System.out.println("5.addAssignmenttocourse\n6.removeAssignment\n7.removeCourse\n8.newCourse\n9.quit");
+                    command = input.next();
+                    System.out.flush();
+                    switch (command) {
+                        case "1":
+                            System.out.println("enter studentID:");
+                            String studentID = input.next();
+                            System.out.println("enter codeofcourse:");
+                            String codeofcourse =  input.next();
+                            admin.removeStudentFromCourse(studentID, codeofcourse);
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            break;
+                        case "2":
+                            System.out.println("enter name:");
+                            String name = input.next();
+                            System.out.println("enter surname:");
+                            String surname = input.next();
+                            System.out.println("enter codeofcourse:");
+                            codeofcourse =  input.next();
+                            admin.removeTeacherfromcourse(name , surname ,codeofcourse);
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            break;
+                        case "3":
+                            System.out.println("enter studentID:");
+                            studentID = input.next();
+                            System.out.println("enter codeofcourse:");
+                            codeofcourse =  input.next();
+                            admin.addStudenttocourse(studentID, codeofcourse);
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            break;
+                        case "4":
+                            System.out.println("enter name:");
+                            name = input.next();
+                            System.out.println("enter surname:");
+                            surname = input.next();
+                            System.out.println("enter codeofcourse:");
+                            codeofcourse =  input.next();
+                            admin.setTeachertocourse(name , surname ,codeofcourse);
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            break;
+                        case "5":
+                            System.out.println("enter codeofcourse:");
+                            codeofcourse =  input.next();
+                            System.out.println("enter Assignmentt:");
+                            String name_Assignmentt = input.next();
+                            admin.addAssignmenttocourse(codeofcourse, name_Assignmentt);
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            break;
+                        case "6":
+                            System.out.println("enter codeofcourse:");
+                            codeofcourse =  input.next();
+                            System.out.println("enter Assignmentt:");
+                            name_Assignmentt = input.next();
+                            admin.removeAssignment(codeofcourse, name_Assignmentt);
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            break;
+                        case "7":
+                            System.out.println("enter codeofcourse:");
+                            codeofcourse =  input.next();
+                            admin.removeCourse(codeofcourse);
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            break;
+                        case "8":
+                            System.out.println("enter the units:");
+                            int unit = input.nextInt();
+                            System.out.println("enter the name of course:");
+                            String name_course = input.next();
+                            System.out.println("enter of teacher name:");
+                            name = input.next();
+                            System.out.println("enter of teacher surname:");
+                            surname = input.next();
+                            System.out.println("enter the examinationDate:");
+                            String examinationDate = input.next();
+                            System.out.println("enter codeofcourse:");
+                            codeofcourse =  input.next();
+                            admin.newCourse(name_course,name , surname, unit, examinationDate,codeofcourse);
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                
+            }else{
+
+            }
+            System.out.println("so who are you? Admin/Teacher/exit");
+            identity = input.next();
+        }
+
+
     }
 
     }

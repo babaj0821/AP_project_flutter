@@ -32,6 +32,7 @@ public class Admin {
         if (studentnum != -1 && coursenum != -1) {
             if (courses.get(coursenum).getStudents().contains(students.get(studentnum))) {
                 courses.get(coursenum).removeStudent(students.get(studentnum));
+                students.get(studentnum).removeCourse(courses.get(coursenum));
                 System.out.println("student has been removed");
                 return;
             }else{
@@ -53,6 +54,7 @@ public class Admin {
         if (teachernum != -1 && coursenum != -1) {
             if (courses.get(coursenum).getTeacher().equals(teachers.get(teachernum))) {
                 courses.get(coursenum).setTeacher(null);
+                teachers.get(teachernum).removeCourse(courses.get(coursenum));
                 System.out.println("the teacher has been removed from course , please enter a new teacher");
                 return;
             }else{
@@ -77,6 +79,7 @@ public class Admin {
                return;
             }else{
                 courses.get(coursenum).addStudent(students.get(studentnum));
+                students.get(studentnum).addCourse(courses.get(coursenum));
                 System.out.println("student has been added");
                 return;
             }
@@ -89,7 +92,7 @@ public class Admin {
         }
 
     }
-    public void setTeachertocourse(String name, String surname , String codecourse){
+    public void setTeachertocourse(String name, String surname , String codecourse) throws Exception{
         if (name == null || surname == null || codecourse == null)throw new NullPointerException();
         int teachernum = findteacher(name, surname);
         int coursenum = findcourse(codecourse);
@@ -98,6 +101,7 @@ public class Admin {
                 System.out.println("this teacher is already the teache of the course");
             }else{
                 courses.get(coursenum).setTeacher(teachers.get(teachernum));
+                teachers.get(teachernum).addCourse(courses.get(coursenum));
                 System.out.println("teacher has been set as the newone");
                 return;
             }
