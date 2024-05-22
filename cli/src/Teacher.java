@@ -1,3 +1,4 @@
+import java.nio.charset.CoderResult;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,11 +8,19 @@ public class Teacher {
     private int numberOfCourses;
     private List<Course> courses;
 
-    public Teacher(String name, String surname) {
+    public Teacher(String name, String surname) throws Exception {
         this.name = name;
         this.surname = surname;
         this.numberOfCourses = 0;
         this.courses = new ArrayList<>();
+        Admin a = Admin.getAdmin();
+        a.addteachertolist(this);
+    }
+    public String getName(){
+        return name;
+    }
+    public String getSurname(){
+        return surname;
     }
 
     public void addStudentToCourse(Student student, String courseName) throws Exception {
@@ -100,4 +109,5 @@ public class Teacher {
             return;
         }
     }
+    
 }

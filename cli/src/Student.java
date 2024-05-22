@@ -10,14 +10,18 @@ public class Student {
     private int numberOfEnrollmentUnits;
     private double totalAverageGrade;
     private double currentSemesterAverage;
+    private String password;
+    private String username;
 
-    public Student(String studentId) {
+    public Student(String studentId) throws Exception {
         this.studentId = studentId;
         this.enrollmentCourses = new ArrayList<>();
         this.numberOfCourses = 0;
         this.numberOfEnrollmentUnits = 0;
         this.totalAverageGrade = 0.0;
         this.currentSemesterAverage = 0.0;
+        Admin a = Admin.getAdmin();
+        a.addstudenttolist(this);
     }
 
     public void addCourse(Course courseName) throws Exception{

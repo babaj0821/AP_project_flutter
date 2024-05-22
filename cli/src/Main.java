@@ -5,8 +5,8 @@ public class Main {
     public static void main(String[] args) throws Exception{
         Teacher teacher1 = new Teacher("Hamidreza", "Mahdiyani");
         Teacher teacher2 = new Teacher("Mojtaba", "Vahidi");
-        Course course1 = new Course("logic circuits", teacher1, 3, "2024/09/12");
-        Course course2 = new Course("AP", teacher2, 3, "2024/09/15");
+        Course course1 = new Course("logic circuits", teacher1, 3, "2024/09/12" , "46844");
+        Course course2 = new Course("AP", teacher2, 3, "2024/09/15" , "4697949");
         course1.setActive(true);
         course2.setActive(true);
         Student student1 = new Student("S001");

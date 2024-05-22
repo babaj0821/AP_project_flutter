@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class Course {
     private String courseName;
+    private String codecourse;
     private Teacher teacher;
     private int numberOfUnits;
     private List<Student> students;
@@ -17,10 +18,11 @@ public class Course {
     private int numberOfRegisteredStudents;
     private Map<Student, Double> grades;
 
-    public Course(String courseName, Teacher teacher, int numberOfUnits, String examinationDate) {
+    public Course(String courseName, Teacher teacher, int numberOfUnits, String examinationDate , String codecourse) throws Exception {
         this.courseName = courseName;
         this.teacher = teacher;
         this.numberOfUnits = numberOfUnits;
+        this.codecourse = codecourse;
         this.students = new ArrayList<>();
         this.exercises = new ArrayList<>();
         this.numberOfExercises = 0;
@@ -28,9 +30,23 @@ public class Course {
         this.hasActiveProjects = true;
         this.numberOfRegisteredStudents = 0;
         this.grades = new HashMap<>();
+        Admin a = Admin.getAdmin();
+        a.addcoursetolist(this);
     }
     public void setActive(boolean isActive) {
         this.isActive = isActive;
+    }
+    public Teacher getTeacher() {
+        return teacher;
+    }
+    public List<Student> getStudents() {
+        return students;
+    } 
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
+    public String getCodecourse() {
+        return codecourse;
     }
 
     public void addStudent(Student student) throws Exception{

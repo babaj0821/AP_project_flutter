@@ -7,11 +7,13 @@ public class Assignment {
     private LocalDateTime deadline;
     private boolean isActive;
 
-    public Assignment(Course courseName, String assignmentName, LocalDateTime deadline) {
+    public Assignment(Course courseName, String assignmentName, LocalDateTime deadline) throws Exception {
         this.courseName = courseName;
         this.assignmentName = assignmentName;
         this.deadline = deadline;
         this.isActive = true;
+        Admin a = Admin.getAdmin();
+        a.addassignmenttolist(this);
     }
 
     public String timeLeftUntilDeadline() {
