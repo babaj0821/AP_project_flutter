@@ -26,23 +26,21 @@ public class Teacher {
     }
 
     public void addStudentToCourse(Student student, String courseName) throws Exception {
-        if (courseName == null)throw new NullPointerException("this course in null");
-
         Course course = findCourseByName(courseName);
-        if (course != null) {
+        if (student == null) throw new NullPointerException("this student is wrong");
+        if (course != null && !course.getStudents().contains(student)) {
             course.addStudent(student);
+            System.out.println("the student has been added");
             return;
         }else{
-            System.out.println("can not remove");
+            System.out.println("can not remove course is wrong or student is already in this class");
             return;
         }
     }
 
     public void removeStudentFromCourse(Student student, String courseName) throws Exception {
-        if (courseName == null)throw new NullPointerException("this course in null");
-
         Course course = findCourseByName(courseName);
-        if (course != null) {
+        if (course != null && course.getStudents().contains(student)) {
             course.removeStudent(student);
             System.out.println("has been removed");
             return;
@@ -54,21 +52,44 @@ public class Teacher {
 
     public void assignGradeToStudent(Student student, String courseName, double grade) throws Exception {
         Course course = findCourseByName(courseName);
-        course.assignGrade(student, grade);
+        if(course == null)throw new NullPointerException("the course is wrong");
+        if (student == null)throw new NullPointerException("the student is wrong");
+        for(int i = 0 ; i < course.getStudents().size() ; i++){
+            if (student.equals(course.getStudents().get(i))) {
+                course.assignGrade(student, grade);
+                System.out.println("the grade has been given");
+                return;
+            }
+        }
+        System.out.println("the studen name is wrong");
+        return;
     }
 
     public void addCourse(Course course)throws Exception {
         if (course == null) throw new NullPointerException("please enter a course");
+        for(int i = 0 ; i < courses.size() ; i++){
+            if (course.equals(courses.get(i))) {
+                System.out.println("this course already exist");
+                return;
+            }
+        }
         courses.add(course);
         numberOfCourses++;
+        System.out.println("the course has been added");
     }
 
     public void removeCourse(Course course)throws Exception {
         if (course == null) throw new NullPointerException("please enter a course");
-        courses.remove(course);
-        numberOfCourses--;
-        System.out.println("has been removed");
-
+        for(int i = 0 ; i < courses.size() ; i++){
+            if (course.equals(courses.get(i))) {
+                courses.remove(course);
+                numberOfCourses--;
+                System.out.println("has been removed");
+                return;
+            }
+        }
+        System.out.println("this course is not in your list");
+        return;
     }
 
     private Course findCourseByName(String courseName) {
@@ -84,6 +105,7 @@ public class Teacher {
 
         if (courses.contains(course)) {
             course.addassignment(assignment);
+            System.out.println("assignment has been given");
         }else{
             System.out.println("you can not add assignment to this course");
             return;
@@ -105,6 +127,7 @@ public class Teacher {
 
         if (courses.contains(course)) {
             course.setActive(true);
+            System.out.println("the course has been activated");
             return;
         }else{
             System.out.println("this course is not yours");

@@ -200,6 +200,14 @@ public class Admin {
         }
         return -1;
     }
+    public Student findstudentte(String studentId){
+        for(int i = 0 ; i < students.size() ; i++){
+            if (studentId.equals(students.get(i).getStudentId())) {
+                return students.get(i);
+            }
+        }
+        return null;
+    }
     public int findcourse(String codecourse){
         for(int i = 0 ; i < courses.size() ;i++){
             if (courses.get(i).getCodecourse().equals(codecourse)) {
@@ -207,6 +215,14 @@ public class Admin {
             }
         }
         return -1;
+    }
+    public Course findcoursete(String codecourse){
+        for(int i = 0 ; i < courses.size() ;i++){
+            if (courses.get(i).getCodecourse().equals(codecourse)) {
+                return courses.get(i);
+            }
+        }
+        return null;
     }
     public int findteacher(String teacheId){
         for(int i = 0 ;i < teachers.size() ; i++){
@@ -231,6 +247,15 @@ public class Admin {
             }
         }
         return -1;
+    }
+    public Assignment findAssignmentte(String assignmentName){
+        for(int i = 0 ; i < assignments.size() ; i++){
+            if (assignments.get(i).getAssignmentName().equals(assignmentName)) {
+                return assignments.get(i);
+            }
+        }
+        return null;
+
     }
     public void setCourseactive(String codeofcourse)throws Exception{
         if (codeofcourse == null) throw new NullPointerException();

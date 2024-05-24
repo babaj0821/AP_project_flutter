@@ -108,10 +108,13 @@ public class Course {
         numberOfExercises++;
     }
 
-    public void addassignment(Assignment assignment){
+    public void addassignment(Assignment assignment)throws Exception{
+        if (assignment == null)throw new NullPointerException("the assignment is wrong");
+
         assignments.add(assignment);
     }
-    public void removeAssignment(Assignment assignment){
+    public void removeAssignment(Assignment assignment)throws Exception{
+        if (assignment == null)throw new NullPointerException("the assignment is wrong");
         if (assignments.contains(assignment)) {
             assignments.remove(assignment);
         }else{

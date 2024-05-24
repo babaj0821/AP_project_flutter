@@ -120,30 +120,120 @@ public class Main {
                 
             }else if(identity.equals("Teacher")){
                 String command = "";
+                System.out.println("enter the teacher ID:");
                 String teacherid = input.next();
                 Teacher te = Admin.findtaecher(teacherid);
-                while (!command.equals(identity)) {
+                if (te == null){
+                    System.out.println("the teacher id is wrong");
+                    continue;
+                }
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+                while (!command.equals("9")) {
                     System.out.println("1.addStudentToCourse\n2.removeStudentFromCourse\n3.assignGradeToStudent\n4.addCourse\n5.removeCourse");
-                    System.out.print("6.findCourseByName\n7.giveaddassignment\n8.removeassignment\n9.setthecourseActive\n10.quit");
-
+                    System.out.print("6.giveaddassignment\n7.removeassignment\n8.setthecourseActive\n9.quit");
+                    command = input.next();
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
                     switch (command) {
                         case "1":
+                            System.out.println("enter the student ID:");
+                            String studentid = input.next();
+                            System.out.println("enter the codeof course:");
+                            String codecourse = input.next();
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            try{
+                            t.addStudentToCourse(Admin.getAdmin().findstudentte(studentid) , Admin.getAdmin().findcoursete(codecourse).getCourseName());
+                            }catch(NullPointerException e){
+                                System.out.println("the course or student is not correct");
+                            }
                             break;
                         case "2":
+                            System.out.println("enter the student ID:");
+                            studentid = input.next();
+                            System.out.println("enter the codeof course:");
+                            codecourse = input.next();
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            try{
+                                t.removeStudentFromCourse(Admin.getAdmin().findstudentte(studentid) , Admin.getAdmin().findcoursete(codecourse).getCourseName());
+                            }catch(NullPointerException e){
+                                System.out.println("the course or student is not correct");
+                            }
                             break;
                         case "3":
+                            System.out.println("enter the student ID:");
+                            studentid = input.next();
+                            System.out.println("enter the codeofcourse:");
+                            codecourse = input.next();
+                            System.out.println("enter the grade:");
+                            double grade = input.nextDouble();
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            try{
+                                t.assignGradeToStudent(Admin.getAdmin().findstudentte(studentid) , Admin.getAdmin().findcoursete(codecourse).getCourseName(), grade);
+                            }catch(NullPointerException e){
+                                System.out.println("course or student is wrong");
+                            }
                             break;
                         case "4":
+                            System.out.println("enter the codeofcourse:");
+                            codecourse = input.next();
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            try{
+                                t.addCourse(Admin.getAdmin().findcoursete(codecourse));
+                            }catch(NullPointerException e){
+                                System.out.println("the code course is wrong");
+                            }
                             break;
                         case "5":
+                            System.out.println("enter the codeofcourse:");
+                            codecourse = input.next();
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            try{
+                                t.removeCourse((Admin.getAdmin().findcoursete(codecourse)));
+                            }catch(NullPointerException e){
+                                System.out.println("the code course is wrong");
+                            }
                             break;
                         case "6":
+                            System.out.println("entet the codeofcourse:");
+                            codecourse = input.next();
+                            System.out.println("the name of the assignment:");
+                            String nameofassignment = input.next();
+                            System.out.println("enter the deadline:");
+                            String time = input.next();
+                            Assignment assignment = new Assignment(c, nameofassignment, LocalDateTime.parse(time));
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            try{
+                                t.giveaddassignment(Admin.getAdmin().findcoursete(codecourse), assignment);
+                            }catch(NullPointerException e){
+                                System.out.println("the assignment is wrong");
+                            }
                             break;
                         case "7":
+                            System.out.println("entet the codeof course:");
+                            codecourse = input.next();
+                            System.out.println("the name of the assignment:");
+                            nameofassignment = input.next();
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            try{
+                                t.removeassignment(Admin.getAdmin().findcoursete(codecourse), Admin.getAdmin().findAssignmentte(nameofassignment));
+                            }catch(NullPointerException e){
+                                System.out.println("the assignment is wrong");
+                            }
                             break;
                         case "8":
-                            break;
-                        case "9":
+                            System.out.println("enter the codeofcourse:");
+                            codecourse = input.next();
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            t.setActive(Admin.getAdmin().findcoursete(codecourse));
                             break;
                         default:
                             break;
