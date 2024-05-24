@@ -30,6 +30,7 @@ public class Course {
         this.hasActiveProjects = true;
         this.numberOfRegisteredStudents = 0;
         this.grades = new HashMap<>();
+        this.assignments = new ArrayList<>();
         Admin a = Admin.getAdmin();
         a.addcoursetolist(this);
     }
@@ -110,7 +111,6 @@ public class Course {
 
     public void addassignment(Assignment assignment)throws Exception{
         if (assignment == null)throw new NullPointerException("the assignment is wrong");
-
         assignments.add(assignment);
     }
     public void removeAssignment(Assignment assignment)throws Exception{

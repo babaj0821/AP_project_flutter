@@ -8,7 +8,7 @@ public class Main {
         Teacher t = new Teacher("ali", "ahmady", "40");
         Teacher t1 = new Teacher("ali", "baba", "30");
 
-        Course c = new Course("ap", t, 3, "20tir", "2");
+        Course c2 = new Course("ap", t, 3, "20tir", "2");
         Course c1 = new Course("app", t1, 4, "20tir", "1");
         
         Student s = new Student("402243039");
@@ -144,7 +144,7 @@ public class Main {
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try{
-                            t.addStudentToCourse(Admin.getAdmin().findstudentte(studentid) , Admin.getAdmin().findcoursete(codecourse).getCourseName());
+                            te.addStudentToCourse(Admin.getAdmin().findstudentte(studentid) , Admin.getAdmin().findcoursete(codecourse).getCourseName());
                             }catch(NullPointerException e){
                                 System.out.println("the course or student is not correct");
                             }
@@ -157,7 +157,7 @@ public class Main {
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try{
-                                t.removeStudentFromCourse(Admin.getAdmin().findstudentte(studentid) , Admin.getAdmin().findcoursete(codecourse).getCourseName());
+                                te.removeStudentFromCourse(Admin.getAdmin().findstudentte(studentid) , Admin.getAdmin().findcoursete(codecourse).getCourseName());
                             }catch(NullPointerException e){
                                 System.out.println("the course or student is not correct");
                             }
@@ -172,7 +172,7 @@ public class Main {
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try{
-                                t.assignGradeToStudent(Admin.getAdmin().findstudentte(studentid) , Admin.getAdmin().findcoursete(codecourse).getCourseName(), grade);
+                                te.assignGradeToStudent(Admin.getAdmin().findstudentte(studentid) , Admin.getAdmin().findcoursete(codecourse).getCourseName(), grade);
                             }catch(NullPointerException e){
                                 System.out.println("course or student is wrong");
                             }
@@ -183,7 +183,7 @@ public class Main {
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try{
-                                t.addCourse(Admin.getAdmin().findcoursete(codecourse));
+                                te.addCourse(Admin.getAdmin().findcoursete(codecourse));
                             }catch(NullPointerException e){
                                 System.out.println("the code course is wrong");
                             }
@@ -194,7 +194,7 @@ public class Main {
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try{
-                                t.removeCourse((Admin.getAdmin().findcoursete(codecourse)));
+                                te.removeCourse((Admin.getAdmin().findcoursete(codecourse)));
                             }catch(NullPointerException e){
                                 System.out.println("the code course is wrong");
                             }
@@ -206,11 +206,11 @@ public class Main {
                             String nameofassignment = input.next();
                             System.out.println("enter the deadline:");
                             String time = input.next();
-                            Assignment assignment = new Assignment(c, nameofassignment, LocalDateTime.parse(time));
+                            Assignment assignment = new Assignment(Admin.getAdmin().findcoursete(codecourse), nameofassignment, LocalDateTime.parse(time));
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try{
-                                t.giveaddassignment(Admin.getAdmin().findcoursete(codecourse), assignment);
+                                te.giveaddassignment(Admin.getAdmin().findcoursete(codecourse), assignment);
                             }catch(NullPointerException e){
                                 System.out.println("the assignment is wrong");
                             }
@@ -223,7 +223,7 @@ public class Main {
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try{
-                                t.removeassignment(Admin.getAdmin().findcoursete(codecourse), Admin.getAdmin().findAssignmentte(nameofassignment));
+                                te.removeassignment(Admin.getAdmin().findcoursete(codecourse), Admin.getAdmin().findAssignmentte(nameofassignment));
                             }catch(NullPointerException e){
                                 System.out.println("the assignment is wrong");
                             }
@@ -233,7 +233,7 @@ public class Main {
                             codecourse = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
-                            t.setActive(Admin.getAdmin().findcoursete(codecourse));
+                            te.setActive(Admin.getAdmin().findcoursete(codecourse));
                             break;
                         default:
                             break;
@@ -242,7 +242,10 @@ public class Main {
             }
             System.out.println("so who are you? Admin/Teacher/exit");
             identity = input.next();
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
         }
+        System.out.println("goodbye!");
         input.close();
     }
 
