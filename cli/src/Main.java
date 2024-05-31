@@ -358,7 +358,22 @@ public class Main {
                                 continue;
                             }
                             break;
-
+                        case "12":
+                            System.out.println("enter teacherId");
+                            String id2 = input.next();
+                            System.out.println("enter name");
+                            String name = input.next();
+                            System.out.println("enter surname");
+                            String surname = input.next();
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            try {
+                                admin.addNewTeacher(name, surname, id2);
+                            } catch (Exception e) {
+                                System.out.println(e);
+                                continue;
+                            }
+                            break;
                         default:
                             break;
                     }

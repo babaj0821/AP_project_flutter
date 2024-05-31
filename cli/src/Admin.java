@@ -183,8 +183,13 @@ public class Admin {
         }
     }
 
-    public void addNewTeacher() {
-
+    public void addNewTeacher(String name, String surname, String id) {
+        try {
+            Teacher teacher = new Teacher(name, surname, id);
+            teachers.add(teacher);
+        } catch (Exception e) {
+            e.getMessage();
+        }
     }
 
     public void removeTeacher() {
