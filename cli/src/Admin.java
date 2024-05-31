@@ -202,7 +202,24 @@ public class Admin {
 
     }
 
-    public void removeStudent() {
+    public void removeStudent(String id) {
+        // first removes student from course then from admin list
+        try {
+            for (int i = 0; i < courses.size(); i++) {
+                List<Student> studentsOfCurrentCourse = courses.get(i).getStudents();
+                for (int j = 0; j < studentsOfCurrentCourse.size(); j++) {
+                    if (studentsOfCurrentCourse.get(j).getStudentId().equals(id)) {
+                        removeStudentFromCourse(id, courses.get(i).getCodecourse());
+                        break;
+                    }
+                }
+            }
+            Student student = findstudentObj(id);
+            students.remove(student);
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
 
     }
 

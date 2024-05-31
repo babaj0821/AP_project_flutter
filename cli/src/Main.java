@@ -345,6 +345,20 @@ public class Main {
                                 System.out.println(e);
                                 continue;
                             }
+                            break;
+                        case "11":
+                            System.out.println("enter studentId");
+                            String id1 = input.next();
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            try {
+                                admin.removeStudent(id1);
+                            } catch (Exception e) {
+                                System.out.println(e);
+                                continue;
+                            }
+                            break;
+
                         default:
                             break;
                     }

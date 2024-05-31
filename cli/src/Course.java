@@ -18,7 +18,7 @@ public class Course {
     private int numberOfRegisteredStudents;
     private Map<Student, Double> grades;
 
-    public Course(String courseName, Teacher teacher, int numberOfUnits, String examinationDate , String codecourse) {
+    public Course(String courseName, Teacher teacher, int numberOfUnits, String examinationDate, String codecourse) {
         this.courseName = courseName;
         this.teacher = teacher;
         this.numberOfUnits = numberOfUnits;
@@ -38,28 +38,36 @@ public class Course {
             System.out.println(e);
         }
     }
+
     public void setActive(boolean isActive) {
         this.isActive = isActive;
     }
+
     public Teacher getTeacher() {
         return teacher;
     }
+
     public List<Student> getStudents() {
         return students;
-    } 
+    }
+
     public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
     }
+
     public String getCodecourse() {
         return codecourse;
     }
+
     public List<Assignment> getAssignments() {
         return assignments;
     }
 
-    public void addStudent(Student student) throws Exception{
-        if (student == null)throw new NullPointerException("you have not enterd any student");
-        if (isActive == false) throw new Exception("please activate the course");
+    public void addStudent(Student student) throws Exception {
+        if (student == null)
+            throw new NullPointerException("you have not enterd any student");
+        if (isActive == false)
+            throw new Exception("please activate the course");
 
         if (students.contains(student)) {
             System.out.println("this student has been sighend up");
@@ -69,19 +77,21 @@ public class Course {
         numberOfRegisteredStudents++;
     }
 
-    public void removeStudent(Student student) throws Exception{
-        if (student == null)throw new NullPointerException("you have not enterd any student");
+    public void removeStudent(Student student) throws Exception {
+        if (student == null)
+            throw new NullPointerException("you have not enterd any student");
         if (students.contains(student)) {
             students.remove(student);
             numberOfRegisteredStudents--;
             grades.remove(student);
-        }else{
+        } else {
             System.out.println("this student is not in this course");
         }
     }
 
-    public void assignGrade(Student student, double grade)throws Exception {
-        if (student == null)throw new NullPointerException("you have not eneter any student");
+    public void assignGrade(Student student, double grade) throws Exception {
+        if (student == null)
+            throw new NullPointerException("you have not eneter any student");
         grades.put(student, grade);
     }
 
@@ -94,7 +104,7 @@ public class Course {
                 }
             }
             return highestGrade;
-        }else{
+        } else {
             System.out.println("this class is empty");
             return 0.0;
         }
@@ -106,28 +116,33 @@ public class Course {
         }
     }
 
-    public void addExercise(String exercise)throws Exception {
-        if (exercise == null)throw new NullPointerException("this exercise is empty");
+    public void addExercise(String exercise) throws Exception {
+        if (exercise == null)
+            throw new NullPointerException("this exercise is empty");
 
         exercises.add(exercise);
         numberOfExercises++;
     }
 
-    public void addassignment(Assignment assignment)throws Exception{
-        if (assignment == null)throw new NullPointerException("the assignment is wrong");
+    public void addassignment(Assignment assignment) throws Exception {
+        if (assignment == null)
+            throw new NullPointerException("the assignment is wrong");
         assignments.add(assignment);
     }
-    public void removeAssignment(Assignment assignment)throws Exception{
-        if (assignment == null)throw new NullPointerException("the assignment is wrong");
+
+    public void removeAssignment(Assignment assignment) throws Exception {
+        if (assignment == null)
+            throw new NullPointerException("the assignment is wrong");
         if (assignments.contains(assignment)) {
             assignments.remove(assignment);
-        }else{
+        } else {
             System.out.println("there is no such Assignment in this course");
         }
     }
 
-    public void removeExercise(String exercise)throws Exception {
-        if (exercise == null)throw new NullPointerException("this exercise is empty");
+    public void removeExercise(String exercise) throws Exception {
+        if (exercise == null)
+            throw new NullPointerException("this exercise is empty");
         exercises.remove(exercise);
         numberOfExercises--;
     }
@@ -155,13 +170,17 @@ public class Course {
     public Map<Student, Double> getGrades() {
         return grades;
     }
-    public Double grade(Student s){
+
+    public Double grade(Student s) {
         return grades.get(s);
     }
+
     public int getNumberOfUnits() {
         return numberOfUnits;
     }
+
     public String getExaminationDate() {
         return examinationDate;
     }
+
 }
