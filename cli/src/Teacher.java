@@ -39,6 +39,7 @@ public class Teacher {
         if (student == null) throw new NullPointerException("this student is wrong");
         if (course != null && !course.getStudents().contains(student)) {
             course.addStudent(student);
+            student.addCourse(course);
             System.out.println("the student has been added");
             return;
         }else{
@@ -51,6 +52,7 @@ public class Teacher {
         Course course = findCourseByName(courseName);
         if (course != null && course.getStudents().contains(student)) {
             course.removeStudent(student);
+            student.removeCourse(course);
             System.out.println("has been removed");
             return;
         }else{

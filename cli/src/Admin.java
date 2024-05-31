@@ -208,9 +208,12 @@ public class Admin {
 
     public void addNewStudent(String id) {
         try {
-            Student student = new Student(id);
-            students.add(student);
-
+            Student s = findstudentObj(id);
+            if (s != null) {
+                System.out.println("this student alredy exist");
+            }else{
+                Student student = new Student(id);
+            }
         } catch (Exception e) {
             e.getMessage();
         }

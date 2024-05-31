@@ -107,17 +107,13 @@ public class Main {
             for (int i = 0; i < students.size(); i++) {
                 Student student = students.get(i);
                 List<Course> c = student.getEnrollmentCourses();
-                writer.write(student.getStudentId() + "/");
-                for (int j = 0; j < c.size(); j++) {
-                    if (j == c.size() - 1) {
-                        if (i == students.size() - 1) {
-                            writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student));
-                        } else {
-                            writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student) + "\n");
-                        }
-                        break;
+                if (c == null) {
+                    writer.write(student.getStudentId());   
+                }else{
+                    writer.write(student.getStudentId() + "/");
+                    for (int j = 0; j < c.size(); j++) {
+                        writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student) + "\n");
                     }
-                    writer.write(c.get(i).getCodecourse() + "/");
                 }
             }
         } catch (IOException e) {
