@@ -18,6 +18,15 @@ public class Teacher {
         Admin a = Admin.getAdmin();
         a.addteachertolist(this);
     }
+    public String getName() {
+        return name;
+    }
+    public int getNumberOfCourses() {
+        return numberOfCourses;
+    }
+    public String getSurname() {
+        return surname;
+    }
     public String getTeacherID() {
         return teacherID;
     }

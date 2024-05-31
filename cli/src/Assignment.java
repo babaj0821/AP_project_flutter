@@ -21,6 +21,9 @@ public class Assignment {
     public Course getCourseName() {
         return courseName;
     }
+    public LocalDateTime getDeadline() {
+        return deadline;
+    }
 
     public String timeLeftUntilDeadline() {
         LocalDateTime now = LocalDateTime.now();

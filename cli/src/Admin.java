@@ -26,20 +26,19 @@ public class Admin {
     }
 
     public void removeStudentFromCourse(String studentId , String codecourse) throws Exception{
-        if (studentId == null || codecourse == null) throw new NullPointerException();
-        int studentnum = findstudent(studentId);
-        int coursenum =findcourse(codecourse);
-        if (studentnum != -1 && coursenum != -1) {
-            if (courses.get(coursenum).getStudents().contains(students.get(studentnum))) {
-                courses.get(coursenum).removeStudent(students.get(studentnum));
-                students.get(studentnum).removeCourse(courses.get(coursenum));
+        Student student = findstudentObj(studentId);
+        Course course =findcourseObj(codecourse);
+        if (student != null && course != null) {
+            if (course.getStudents().contains(student)) {
+                course.removeStudent(student);
+                student.removeCourse(course);
                 System.out.println("student has been removed");
                 return;
             }else{
                 System.out.println("this student is not in this class");
                 return;
             }
-        }else if(coursenum == -1){
+        }else if(course == null){
             System.out.println("course doesnt exist");
             return;
         }else{
@@ -48,20 +47,19 @@ public class Admin {
         }
     }
     public void removeTeacherfromcourse(String teacherid , String codecourse)throws Exception{
-        if (teacherid == null|| codecourse == null)throw new NullPointerException();
-        int teachernum = findteacher(teacherid);
-        int coursenum = findcourse(codecourse);
-        if (teachernum != -1 && coursenum != -1) {
-            if (courses.get(coursenum).getTeacher().equals(teachers.get(teachernum))) {
-                courses.get(coursenum).setTeacher(null);
-                teachers.get(teachernum).removeCourse(courses.get(coursenum));
+        Teacher teacher = findtaecherObj(teacherid);
+        Course course = findcourseObj(codecourse);
+        if (teacher != null && course != null) {
+            if (course.getTeacher().equals(teacher)) {
+                course.setTeacher(null);
+                teacher.removeCourse(course);
                 System.out.println("the teacher has been removed from course , please enter a new teacher");
                 return;
             }else{
                 System.out.println("this teacher is not responsible for this course");
                 return;
             }
-        }else if(coursenum == -1){
+        }else if(course == null){
             System.out.println("course doesnt exist");
             return;
         }else{
@@ -70,20 +68,19 @@ public class Admin {
         }
     }
     public void addStudenttocourse(String studentId , String codecourse) throws Exception{
-        if (studentId == null || codecourse == null) throw new NullPointerException();
-        int studentnum = findstudent(studentId);
-        int coursenum = findcourse(codecourse);
-        if (studentnum != -1 && coursenum != -1) {
-            if (courses.get(coursenum).getStudents().contains(students.get(studentnum))) {
+        Student student = findstudentObj(studentId);
+        Course course = findcourseObj(codecourse);
+        if (student != null && course != null) {
+            if (course.getStudents().contains(student)) {
                System.out.println("this student is already in this course"); 
                return;
             }else{
-                courses.get(coursenum).addStudent(students.get(studentnum));
-                students.get(studentnum).addCourse(courses.get(coursenum));
+                course.addStudent(student);
+                student.addCourse(course);
                 System.out.println("student has been added");
                 return;
             }
-        }else if(coursenum == -1){
+        }else if(course == null){
             System.out.println("course doesnt exist");
             return;
         }else{
@@ -93,20 +90,19 @@ public class Admin {
 
     }
     public void setTeachertocourse(String teacherID , String codecourse) throws Exception{
-        if (teacherID == null || codecourse == null)throw new NullPointerException();
-        int teachernum = findteacher(teacherID);
-        int coursenum = findcourse(codecourse);
-        if (teachernum != -1 && coursenum != -1) {
-            if (courses.get(coursenum).getTeacher() == null) {
-                courses.get(coursenum).setTeacher(teachers.get(teachernum));
-                teachers.get(teachernum).addCourse(courses.get(coursenum));
+        Teacher teacher = findtaecherObj(teacherID);
+        Course course = findcourseObj(codecourse);
+        if (teacher != null && course != null) {
+            if (course.getTeacher() == null) {
+                course.setTeacher(teacher);
+                teacher.addCourse(course);
                 System.out.println("teacher has been set as the newone");
                 return;
             }
-            if (courses.get(coursenum).getTeacher().equals(teachers.get(teachernum))) {
+            if (course.getTeacher().equals(teacher)) {
                 System.out.println("this teacher is already the teacher of the course");
             }
-        }else if(coursenum != -1){
+        }else if(course != null){
             System.out.println("course doesnt exist");
             return;
         }else{
@@ -117,19 +113,19 @@ public class Admin {
     public void addAssignmenttocourse(String coursecode, String assignmentName) throws Exception{
         if(coursecode == null || assignmentName == null)throw new NullPointerException();
 
-        int assignmentnum = findassignment(assignmentName);
-        int coursecodenum = findcourse(coursecode);
+        Assignment assignment = findAssignmentObj(assignmentName);
+        Course course = findcourseObj(coursecode);
 
-        if (assignmentnum == -1 && coursecodenum != -1) {
-            if (assignments.get(assignmentnum).getCourseName().equals(courses.get(coursecodenum))) {
+        if (assignment != null && course != null) {
+            if (course.getAssignments().contains(assignment)) {
                 System.out.println("this assignment is already in this course");
                 return;
             }else{
-                courses.get(coursecodenum).addassignment(assignments.get(assignmentnum));
+                course.addassignment(assignment);
                 System.out.println("the assingment has been given");
                 return;
             }
-        }else if(coursecodenum == -1){
+        }else if(course == null){
             System.out.println("course doesnt exist");
             return;
         }else{
@@ -138,18 +134,17 @@ public class Admin {
         }
     }
     public void removeAssignment(String coursecode, String assignmentName){
-        if(coursecode == null || assignmentName == null)throw new NullPointerException();
 
-        int assignmentnum = findassignment(assignmentName);
-        int coursecodenum = findcourse(coursecode);
+        Assignment assignment = findAssignmentObj(assignmentName);
+        Course course = findcourseObj(coursecode);
 
-        if (assignmentnum != -1 && coursecodenum != -1) {
-            if (assignments.get(assignmentnum).getCourseName().equals(courses.get(coursecodenum))) {
-                courses.get(coursecodenum).getAssignments().remove(assignments.get(assignmentnum));
+        if (assignment != null && course != null) {
+            if (assignment.getCourseName().equals(course)) {
+                course.getAssignments().remove(assignment);
             }else{
                 System.out.println("this assignment is not related to this course");
             }
-        }else if(coursecodenum == -1){
+        }else if(course == null){
             System.out.println("course doesnt exist");
             return;
         }else{
@@ -159,48 +154,36 @@ public class Admin {
 
     }
     public void removeCourse(String codecourse)throws Exception{
-        if (codecourse == null)throw new NullPointerException();
-        int coursenum = findcourse(codecourse);
-        if (coursenum != -1) {
-            courses.get(coursenum).getTeacher().removeCourse(courses.get(coursenum));
-            List<Student> s = courses.get(coursenum).getStudents();
+        Course course = findcourseObj(codecourse);
+        if (course != null) {
+            course.getTeacher().removeCourse(course);
+            List<Student> s = course.getStudents();
             for(int i = 0 ; i < s.size() ; i++){
-                s.get(i).removeCourse(courses.get(coursenum));
+                s.get(i).removeCourse(course);
             }
-            courses.remove(coursenum);
+            courses.remove(course);
             System.out.println("the course has been removed");
         }else{
             System.out.println("course doesnt exist");
         }
     }
     public void newCourse(String courseName, String teacherId , 
-    int numberOfUnits, String examinationDate , String codecourse)throws Exception{
+        int numberOfUnits, String examinationDate , String codecourse)throws Exception{
 
-        if (courseName == null || teacherId == null ||
-        examinationDate == null || codecourse == null)throw new NullPointerException();
+        Teacher teacher = findtaecherObj(teacherId);
 
-        int teachernum = findteacher(teacherId);
-
-        if (numberOfUnits > 0 && teachernum != -1) {
-            Course c = new Course(courseName, teachers.get(teachernum), numberOfUnits, examinationDate, codecourse);
-            teachers.get(teachernum).addCourse(c);
+        if (numberOfUnits > 0 && teacher != null) {
+            Course c = new Course(courseName, teacher, numberOfUnits, examinationDate, codecourse);
+            teacher.addCourse(c);
             System.out.println("the course has been added");
-        }else if(numberOfUnits > 0 && teachernum == -1){
+        }else if(numberOfUnits > 0 && teacher == null){
             Course c = new Course(courseName, null, numberOfUnits, examinationDate, codecourse);
             System.out.println("this course dosent have any teacher add one to be shown to students");
         }else if(numberOfUnits <= 0){
             throw new Exception("the course unit must be above 0");
         }
     }
-    public int findstudent(String studentId){
-        for(int i = 0 ; i < students.size() ; i++){
-            if (studentId.equals(students.get(i).getStudentId())) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    public Student findstudentte(String studentId){
+    public Student findstudentObj(String studentId){
         for(int i = 0 ; i < students.size() ; i++){
             if (studentId.equals(students.get(i).getStudentId())) {
                 return students.get(i);
@@ -208,15 +191,7 @@ public class Admin {
         }
         return null;
     }
-    public int findcourse(String codecourse){
-        for(int i = 0 ; i < courses.size() ;i++){
-            if (courses.get(i).getCodecourse().equals(codecourse)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    public Course findcoursete(String codecourse){
+    public Course findcourseObj(String codecourse){
         for(int i = 0 ; i < courses.size() ;i++){
             if (courses.get(i).getCodecourse().equals(codecourse)) {
                 return courses.get(i);
@@ -224,15 +199,7 @@ public class Admin {
         }
         return null;
     }
-    public int findteacher(String teacheId){
-        for(int i = 0 ;i < teachers.size() ; i++){
-            if (teachers.get(i).getTeacherID().equals(teacheId) ) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    public static Teacher findtaecher(String teacheId){
+    public static Teacher findtaecherObj(String teacheId){
         for(int i = 0 ;i < teachers.size() ; i++){
             if (teachers.get(i).getTeacherID().equals(teacheId) ) {
                 return teachers.get(i);
@@ -240,15 +207,7 @@ public class Admin {
         }
         return null;
     }
-    public int findassignment(String assignmentName){
-        for(int i = 0 ; i < assignments.size() ; i++){
-            if (assignments.get(i).getAssignmentName().equals(assignmentName)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    public Assignment findAssignmentte(String assignmentName){
+    public Assignment findAssignmentObj(String assignmentName){
         for(int i = 0 ; i < assignments.size() ; i++){
             if (assignments.get(i).getAssignmentName().equals(assignmentName)) {
                 return assignments.get(i);
@@ -259,8 +218,8 @@ public class Admin {
     }
     public void setCourseactive(String codeofcourse)throws Exception{
         if (codeofcourse == null) throw new NullPointerException();
-        int codeofcoursenum = findcourse(codeofcourse);
-        courses.get(codeofcoursenum).setActive(true);
+        Course course = findcourseObj(codeofcourse);
+        course.setActive(true);
         return;
     }
     public static Admin getAdmin(){
@@ -268,5 +227,17 @@ public class Admin {
             instance = new Admin();
         }
         return instance;
+    }
+    public static List<Assignment> getAssignments() {
+        return assignments;
+    }
+    public static List<Course> getCourses() {
+        return courses;
+    }
+    public static List<Student> getStudents() {
+        return students;
+    }
+    public static List<Teacher> getTeachers() {
+        return teachers;
     }
 }

@@ -18,7 +18,7 @@ public class Course {
     private int numberOfRegisteredStudents;
     private Map<Student, Double> grades;
 
-    public Course(String courseName, Teacher teacher, int numberOfUnits, String examinationDate , String codecourse) throws Exception {
+    public Course(String courseName, Teacher teacher, int numberOfUnits, String examinationDate , String codecourse) {
         this.courseName = courseName;
         this.teacher = teacher;
         this.numberOfUnits = numberOfUnits;
@@ -32,7 +32,11 @@ public class Course {
         this.grades = new HashMap<>();
         this.assignments = new ArrayList<>();
         Admin a = Admin.getAdmin();
-        a.addcoursetolist(this);
+        try {
+            a.addcoursetolist(this);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
     public void setActive(boolean isActive) {
         this.isActive = isActive;
@@ -150,5 +154,14 @@ public class Course {
 
     public Map<Student, Double> getGrades() {
         return grades;
+    }
+    public Double grade(Student s){
+        return grades.get(s);
+    }
+    public int getNumberOfUnits() {
+        return numberOfUnits;
+    }
+    public String getExaminationDate() {
+        return examinationDate;
     }
 }

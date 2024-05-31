@@ -79,4 +79,7 @@ public class Student {
 
         this.totalAverageGrade = len == 0 ? 0 : (double) sum / len;
     }
+    public List<Course> getEnrollmentCourses() {
+        return enrollmentCourses;
+    }
 }
