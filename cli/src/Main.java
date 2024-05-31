@@ -197,12 +197,12 @@ public class Main {
         while (!identity.equals("exit")) {
             if (identity.equals("Admin")) {
                 String command = "";
-                while (!command.equals("10")) {
+                while (!command.equals("14")) {
                     Admin admin = new Admin();
                     System.out.println(
                             "1.removeStudentFromCourse\n2.removeTeacherfromcourse\n3.addStudenttocourse\n4.setTeachertocourse");
                     System.out.println(
-                            "5.addAssignmenttocourse\n6.removeAssignment\n7.removeCourse\n8.newCourse\n9.setcourseactive\n10.quit");
+                            "5.addAssignmenttocourse\n6.removeAssignment\n7.removeCourse\n8.newCourse\n9.setcourseactive\n10.addStudent\n11.removeStudent\n12.addTeacher\n13.removeTeacher\n14.quit");
                     command = input.next();
                     System.out.flush();
                     System.out.print("\033[H\033[2J");
@@ -334,6 +334,17 @@ public class Main {
                                 continue;
                             }
                             break;
+                        case "10":
+                            System.out.println("enter studentId");
+                            String id = input.next();
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            try {
+                                admin.addNewStudent(id);
+                            } catch (Exception e) {
+                                System.out.println(e);
+                                continue;
+                            }
                         default:
                             break;
                     }
