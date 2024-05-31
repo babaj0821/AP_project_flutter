@@ -1,3 +1,5 @@
+
+//Hi all
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class Main {
-    public static void readsudent() throws Exception{
+    public static void readsudent() throws Exception {
         try {
             File file = new File("student.txt");
             FileInputStream fis = new FileInputStream(file);
@@ -17,10 +19,11 @@ public class Main {
             String data = "";
             while (true) {
                 data = br.readLine();
-                if (data == null) break;
+                if (data == null)
+                    break;
                 String[] student = data.split("/");
                 Student s = new Student(student[0]);
-                for(int i = 1 ; i < student.length ; i = i + 2){
+                for (int i = 1; i < student.length; i = i + 2) {
                     Course c = Admin.getAdmin().findcourseObj(student[i]);
                     c.assignGrade(s, Double.parseDouble(student[i + 1]));
                     s.addCourse(c);
@@ -34,7 +37,8 @@ public class Main {
             System.out.println(e);
         }
     }
-    public static void readteacher() throws Exception{
+
+    public static void readteacher() throws Exception {
         try {
             File file = new File("teacher.txt");
             FileInputStream fis = new FileInputStream(file);
@@ -42,7 +46,8 @@ public class Main {
             String data = "";
             while (true) {
                 data = br.readLine();
-                if (data == null) break;
+                if (data == null)
+                    break;
                 String[] teacher = data.split("/");
                 Teacher t = new Teacher(teacher[0], teacher[1], teacher[2]);
             }
@@ -51,7 +56,8 @@ public class Main {
             System.out.println(e);
         }
     }
-    public static void readcourse() throws Exception{
+
+    public static void readcourse() throws Exception {
         try {
             File file = new File("course.txt");
             FileInputStream fis = new FileInputStream(file);
@@ -59,20 +65,21 @@ public class Main {
             String data = "";
             while (true) {
                 data = br.readLine();
-                if (data == null) break;
+                if (data == null)
+                    break;
                 String[] course = data.split("/");
                 Teacher teacher = Admin.findtaecherObj(course[1]);
-                Course c = new Course(course[0], teacher, Integer.parseInt(course[2])
-                , course[3], course[4]);
+                Course c = new Course(course[0], teacher, Integer.parseInt(course[2]), course[3], course[4]);
                 teacher.addCourse(c);
-                
+
             }
             br.close();
         } catch (IOException e) {
             System.out.println(e);
         }
     }
-    public static void readassignment() throws Exception{
+
+    public static void readassignment() throws Exception {
         try {
             File file = new File("assignment.txt");
             FileInputStream fis = new FileInputStream(file);
@@ -80,11 +87,12 @@ public class Main {
             String data = "";
             while (true) {
                 data = br.readLine();
-                if (data == null) break;
+                if (data == null)
+                    break;
                 String[] assignment = data.split("/");
-                Course c =Admin.getAdmin().findcourseObj(assignment[0]);
+                Course c = Admin.getAdmin().findcourseObj(assignment[0]);
                 Assignment a = new Assignment(c,
-                assignment[1], LocalDateTime.parse(assignment[2]));
+                        assignment[1], LocalDateTime.parse(assignment[2]));
                 c.addassignment(a);
             }
             br.close();
@@ -92,19 +100,20 @@ public class Main {
             System.out.println(e);
         }
     }
-    public static void writestudent(){
+
+    public static void writestudent() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("student.txt"))) {
             List<Student> students = Admin.getStudents();
-            for(int i = 0 ; i < students.size() ;i++){
+            for (int i = 0; i < students.size(); i++) {
                 Student student = students.get(i);
                 List<Course> c = student.getEnrollmentCourses();
                 writer.write(student.getStudentId() + "/");
-                for(int j = 0 ; j < c.size() ;j++){
+                for (int j = 0; j < c.size(); j++) {
                     if (j == c.size() - 1) {
                         if (i == students.size() - 1) {
                             writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student));
-                        }else{
-                            writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student) +  "\n");
+                        } else {
+                            writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student) + "\n");
                         }
                         break;
                     }
@@ -115,58 +124,64 @@ public class Main {
             System.out.println(e);
         }
     }
-    public static void writeteacher(){
+
+    public static void writeteacher() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("teacher.txt"))) {
             List<Teacher> teachers = Admin.getTeachers();
-            for(int i = 0 ; i < teachers.size() ; i++){
+            for (int i = 0; i < teachers.size(); i++) {
                 Teacher teacher = teachers.get(i);
                 if (i == teachers.size() - 1) {
-                    writer.write(teacher.getName()+ "/" + teacher.getSurname() + "/" + teacher.getTeacherID());
+                    writer.write(teacher.getName() + "/" + teacher.getSurname() + "/" + teacher.getTeacherID());
                     break;
                 }
 
-                writer.write(teachers.get(i).getName()+ "/" + 
-                teachers.get(i).getSurname() + "/" + teachers.get(i).getTeacherID() + "\n");
+                writer.write(teachers.get(i).getName() + "/" +
+                        teachers.get(i).getSurname() + "/" + teachers.get(i).getTeacherID() + "\n");
             }
         } catch (IOException e) {
             System.out.println(e);
         }
     }
-    public static void writeassignemnt(){
+
+    public static void writeassignemnt() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("assignemnt.txt"))) {
             List<Assignment> assignments = Admin.getAssignments();
-            for(int i = 0 ; i < assignments.size() ; i++){
+            for (int i = 0; i < assignments.size(); i++) {
                 Assignment assignment = assignments.get(i);
                 if (i == assignments.size() - 1) {
-                    writer.write(assignment.getCourseName().getCodecourse()+ "/" +
-                    assignment.getAssignmentName() + "/" + assignment.getDeadline());
+                    writer.write(assignment.getCourseName().getCodecourse() + "/" +
+                            assignment.getAssignmentName() + "/" + assignment.getDeadline());
                     break;
                 }
-                writer.write(assignment.getCourseName().getCodecourse()+ "$" +
-                assignment.getAssignmentName() + "/" + assignment.getDeadline() + "\n");
+                writer.write(assignment.getCourseName().getCodecourse() + "$" +
+                        assignment.getAssignmentName() + "/" + assignment.getDeadline() + "\n");
             }
         } catch (IOException e) {
             System.out.println(e);
         }
     }
-    public static void writecourse(){
+
+    public static void writecourse() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("course.txt"))) {
             List<Course> courses = Admin.getCourses();
-            for(int i = 0 ; i < courses.size() ; i++){
+            for (int i = 0; i < courses.size(); i++) {
                 Course course = courses.get(i);
                 if (i == courses.size() - 1) {
-                    writer.write(course.getCourseName() + "/" + course.getTeacher().getTeacherID() + "/" + course.getNumberOfUnits() + "/"+
-                    course.getExaminationDate() + "/" + course.getCodecourse());
+                    writer.write(course.getCourseName() + "/" + course.getTeacher().getTeacherID() + "/"
+                            + course.getNumberOfUnits() + "/" +
+                            course.getExaminationDate() + "/" + course.getCodecourse());
                     break;
                 }
-                writer.write(course.getCourseName() + "/" + course.getTeacher().getTeacherID() + "/" + course.getNumberOfUnits() + "/"+
-                course.getExaminationDate() + "/" + course.getCodecourse() + "\n");
+                writer.write(course.getCourseName() + "/" + course.getTeacher().getTeacherID() + "/"
+                        + course.getNumberOfUnits() + "/" +
+                        course.getExaminationDate() + "/" + course.getCodecourse() + "\n");
             }
         } catch (IOException e) {
             System.out.println(e);
         }
     }
-    public static void main(String[] args) throws Exception{
+
+    public static void main(String[] args) throws Exception {
         Scanner input = new Scanner(System.in);
         readteacher();
         readcourse();
@@ -184,8 +199,10 @@ public class Main {
                 String command = "";
                 while (!command.equals("10")) {
                     Admin admin = new Admin();
-                    System.out.println("1.removeStudentFromCourse\n2.removeTeacherfromcourse\n3.addStudenttocourse\n4.setTeachertocourse");
-                    System.out.println("5.addAssignmenttocourse\n6.removeAssignment\n7.removeCourse\n8.newCourse\n9.setcourseactive\n10.quit");
+                    System.out.println(
+                            "1.removeStudentFromCourse\n2.removeTeacherfromcourse\n3.addStudenttocourse\n4.setTeachertocourse");
+                    System.out.println(
+                            "5.addAssignmenttocourse\n6.removeAssignment\n7.removeCourse\n8.newCourse\n9.setcourseactive\n10.quit");
                     command = input.next();
                     System.out.flush();
                     System.out.print("\033[H\033[2J");
@@ -194,88 +211,88 @@ public class Main {
                             System.out.println("enter studentID:");
                             String studentID = input.next();
                             System.out.println("enter codeofcourse:");
-                            String codeofcourse =  input.next();
+                            String codeofcourse = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
-                            try{
+                            try {
                                 admin.removeStudentFromCourse(studentID, codeofcourse);
-                            }catch(Exception e){
+                            } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         case "2":
                             System.out.println("eneter teacher Id");
                             String teacherId = input.next();
                             System.out.println("enter codeofcourse:");
-                            codeofcourse =  input.next();
+                            codeofcourse = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try {
-                                admin.removeTeacherfromcourse(teacherId,codeofcourse);
+                                admin.removeTeacherfromcourse(teacherId, codeofcourse);
                             } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         case "3":
                             System.out.println("enter studentID:");
                             studentID = input.next();
                             System.out.println("enter codeofcourse:");
-                            codeofcourse =  input.next();
-                            System.out.print("\033[H\033[2J");
-                            System.out.flush();
-                            try{
-                                admin.addStudenttocourse(studentID, codeofcourse);
-                            }catch(Exception e){
-                                System.out.println(e);
-                                continue;
-                            }
-                        break;
-                        case "4":
-                            System.out.println("eneter teacher Id");
-                            teacherId = input.next();
-                            System.out.println("enter codeofcourse:");
-                            codeofcourse =  input.next();
+                            codeofcourse = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try {
-                                admin.setTeachertocourse(teacherId ,codeofcourse);
+                                admin.addStudenttocourse(studentID, codeofcourse);
                             } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
+                        case "4":
+                            System.out.println("eneter teacher Id");
+                            teacherId = input.next();
+                            System.out.println("enter codeofcourse:");
+                            codeofcourse = input.next();
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            try {
+                                admin.setTeachertocourse(teacherId, codeofcourse);
+                            } catch (Exception e) {
+                                System.out.println(e);
+                                continue;
+                            }
+                            break;
                         case "5":
                             System.out.println("enter codeofcourse:");
-                            codeofcourse =  input.next();
+                            codeofcourse = input.next();
                             System.out.println("enter Assignmentt:");
                             String name_Assignmentt = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try {
-                            admin.addAssignmenttocourse(codeofcourse, name_Assignmentt);
+                                admin.addAssignmenttocourse(codeofcourse, name_Assignmentt);
                             } catch (Exception e) {
                                 System.out.println(e);
                             }
-                        break;
+                            break;
                         case "6":
                             System.out.println("enter codeofcourse:");
-                            codeofcourse =  input.next();
+                            codeofcourse = input.next();
                             System.out.println("enter Assignmentt:");
                             name_Assignmentt = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try {
-                                admin.removeAssignment(codeofcourse, name_Assignmentt);  
+                                admin.removeAssignment(codeofcourse, name_Assignmentt);
                             } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         case "7":
                             System.out.println("enter codeofcourse:");
-                            codeofcourse =  input.next();
+                            codeofcourse = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try {
@@ -284,7 +301,7 @@ public class Main {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         case "8":
                             System.out.println("enter the units:");
                             int unit = input.nextInt();
@@ -295,19 +312,19 @@ public class Main {
                             System.out.println("enter the examinationDate:");
                             String examinationDate = input.next();
                             System.out.println("enter codeofcourse:");
-                            codeofcourse =  input.next();
+                            codeofcourse = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try {
-                                admin.newCourse(name_course,teacherId, unit, examinationDate,codeofcourse);
+                                admin.newCourse(name_course, teacherId, unit, examinationDate, codeofcourse);
                             } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         case "9":
                             System.out.println("enter codeofcourse:");
-                            codeofcourse =  input.next();
+                            codeofcourse = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try {
@@ -316,25 +333,26 @@ public class Main {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         default:
                             break;
                     }
                 }
-                
-            }else if(identity.equals("Teacher")){
+
+            } else if (identity.equals("Teacher")) {
                 String command = "";
                 System.out.println("enter the teacher ID:");
                 String teacherid = input.next();
                 Teacher te = Admin.findtaecherObj(teacherid);
-                if (te == null){
+                if (te == null) {
                     System.out.println("the teacher id is wrong");
                     continue;
                 }
                 System.out.print("\033[H\033[2J");
                 System.out.flush();
                 while (!command.equals("9")) {
-                    System.out.println("1.addStudentToCourse\n2.removeStudentFromCourse\n3.assignGradeToStudent\n4.addCourse\n5.removeCourse");
+                    System.out.println(
+                            "1.addStudentToCourse\n2.removeStudentFromCourse\n3.assignGradeToStudent\n4.addCourse\n5.removeCourse");
                     System.out.print("6.giveaddassignment\n7.removeassignment\n8.setthecourseActive\n9.quit");
                     command = input.next();
                     System.out.print("\033[H\033[2J");
@@ -347,13 +365,14 @@ public class Main {
                             String codecourse = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
-                            try{
-                                te.addStudentToCourse(Admin.getAdmin().findstudentObj(studentid) , Admin.getAdmin().findcourseObj(codecourse).getCourseName());
-                            }catch(Exception e){
+                            try {
+                                te.addStudentToCourse(Admin.getAdmin().findstudentObj(studentid),
+                                        Admin.getAdmin().findcourseObj(codecourse).getCourseName());
+                            } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         case "2":
                             System.out.println("enter the student ID:");
                             studentid = input.next();
@@ -361,13 +380,14 @@ public class Main {
                             codecourse = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
-                            try{
-                                te.removeStudentFromCourse(Admin.getAdmin().findstudentObj(studentid) , Admin.getAdmin().findcourseObj(codecourse).getCourseName());
-                            }catch(Exception e){
+                            try {
+                                te.removeStudentFromCourse(Admin.getAdmin().findstudentObj(studentid),
+                                        Admin.getAdmin().findcourseObj(codecourse).getCourseName());
+                            } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         case "3":
                             System.out.println("enter the student ID:");
                             studentid = input.next();
@@ -377,37 +397,38 @@ public class Main {
                             double grade = input.nextDouble();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
-                            try{
-                                te.assignGradeToStudent(Admin.getAdmin().findstudentObj(studentid) , Admin.getAdmin().findcourseObj(codecourse).getCourseName(), grade);
-                            }catch(Exception e){
+                            try {
+                                te.assignGradeToStudent(Admin.getAdmin().findstudentObj(studentid),
+                                        Admin.getAdmin().findcourseObj(codecourse).getCourseName(), grade);
+                            } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         case "4":
                             System.out.println("enter the codeofcourse:");
                             codecourse = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
-                            try{
+                            try {
                                 te.addCourse(Admin.getAdmin().findcourseObj(codecourse));
-                            }catch(Exception e){
+                            } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         case "5":
                             System.out.println("enter the codeofcourse:");
                             codecourse = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
-                            try{
+                            try {
                                 te.removeCourse((Admin.getAdmin().findcourseObj(codecourse)));
-                            }catch(Exception e){
+                            } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         case "6":
                             System.out.println("entet the codeofcourse:");
                             codecourse = input.next();
@@ -415,16 +436,17 @@ public class Main {
                             String nameofassignment = input.next();
                             System.out.println("enter the deadline:");
                             String time = input.next();
-                            Assignment assignment = new Assignment(Admin.getAdmin().findcourseObj(codecourse), nameofassignment, LocalDateTime.parse(time));
+                            Assignment assignment = new Assignment(Admin.getAdmin().findcourseObj(codecourse),
+                                    nameofassignment, LocalDateTime.parse(time));
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
-                            try{
+                            try {
                                 te.giveaddassignment(Admin.getAdmin().findcourseObj(codecourse), assignment);
-                            }catch(Exception e){
+                            } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         case "7":
                             System.out.println("entet the codeof course:");
                             codecourse = input.next();
@@ -432,13 +454,14 @@ public class Main {
                             nameofassignment = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
-                            try{
-                                te.removeassignment(Admin.getAdmin().findcourseObj(codecourse), Admin.getAdmin().findAssignmentObj(nameofassignment));
-                            }catch(Exception e){
+                            try {
+                                te.removeassignment(Admin.getAdmin().findcourseObj(codecourse),
+                                        Admin.getAdmin().findAssignmentObj(nameofassignment));
+                            } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         case "8":
                             System.out.println("enter the codeofcourse:");
                             codecourse = input.next();
@@ -450,7 +473,7 @@ public class Main {
                                 System.out.println(e);
                                 continue;
                             }
-                        break;
+                            break;
                         default:
                             break;
                     }
@@ -469,4 +492,4 @@ public class Main {
         input.close();
     }
 
-    }
+}
