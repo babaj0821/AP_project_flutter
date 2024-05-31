@@ -374,6 +374,18 @@ public class Main {
                                 continue;
                             }
                             break;
+                        case "13":
+                            System.out.println("enter teacherId");
+                            String id3 = input.next();
+                            System.out.print("\033[H\033[2J");
+                            System.out.flush();
+                            try {
+                                admin.removeTeacher(id3);
+                            } catch (Exception e) {
+                                System.out.println(e);
+                                continue;
+                            }
+                            break;
                         default:
                             break;
                     }

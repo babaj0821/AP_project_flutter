@@ -192,8 +192,18 @@ public class Admin {
         }
     }
 
-    public void removeTeacher() {
-
+    public void removeTeacher(String id) {
+        try {
+            for (int i = 0; i < courses.size(); i++) {
+                if (courses.get(i).getTeacher().getTeacherID().equals(id)) {
+                    removeTeacherfromcourse(id, courses.get(i).getCodecourse());
+                }
+            }
+            Teacher teacher = findtaecherObj(id);
+            teachers.remove(teacher);
+        } catch (Exception e) {
+            e.getMessage();
+        }
     }
 
     public void addNewStudent(String id) {
