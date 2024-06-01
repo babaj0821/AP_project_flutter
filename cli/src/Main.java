@@ -23,7 +23,12 @@ public class Main {
                     break;
                 String[] student = data.split("/");
                 Student s = new Student(student[0]);
-                for (int i = 1; i < student.length; i = i + 2) {
+                if (student[1] == null) {
+                    s.setPassword(null);
+                }else{
+                    s.setPassword(student[1]);
+                }
+                for (int i = 2; i < student.length; i = i + 2) {
                     Course c = Admin.getAdmin().findcourseObj(student[i]);
                     c.assignGrade(s, Double.parseDouble(student[i + 1]));
                     s.addCourse(c);
@@ -110,7 +115,7 @@ public class Main {
                 if (c == null) {
                     writer.write(student.getStudentId());   
                 }else{
-                    writer.write(student.getStudentId() + "/");
+                    writer.write(student.getStudentId() + "/" + student.getPassword() + "/");
                     for (int j = 0; j < c.size(); j++) {
                         writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student) + "\n");
                     }

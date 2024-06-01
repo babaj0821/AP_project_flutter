@@ -11,7 +11,6 @@ public class Student {
     private double totalAverageGrade;
     private double currentSemesterAverage;
     private String password;
-    private String username;
 
     public Student(String studentId) throws Exception {
         this.studentId = studentId;
@@ -22,6 +21,12 @@ public class Student {
         this.currentSemesterAverage = 0.0;
         Admin a = Admin.getAdmin();
         a.addstudenttolist(this);
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void addCourse(Course courseName) throws Exception{
