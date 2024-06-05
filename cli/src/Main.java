@@ -25,7 +25,7 @@ public class Main {
                 Student s = new Student(student[0]);
                 if (student[1] == null) {
                     s.setPassword(null);
-                }else{
+                } else {
                     s.setPassword(student[1]);
                 }
                 for (int i = 2; i < student.length; i = i + 2) {
@@ -113,8 +113,8 @@ public class Main {
                 Student student = students.get(i);
                 List<Course> c = student.getEnrollmentCourses();
                 if (c == null) {
-                    writer.write(student.getStudentId());   
-                }else{
+                    writer.write(student.getStudentId());
+                } else {
                     writer.write(student.getStudentId() + "/" + student.getPassword() + "/");
                     for (int j = 0; j < c.size(); j++) {
                         writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student) + "\n");
@@ -154,7 +154,7 @@ public class Main {
                             assignment.getAssignmentName() + "/" + assignment.getDeadline());
                     break;
                 }
-                writer.write(assignment.getCourseName().getCodecourse() + "$" +
+                writer.write(assignment.getCourseName().getCodecourse() + "/" +
                         assignment.getAssignmentName() + "/" + assignment.getDeadline() + "\n");
             }
         } catch (IOException e) {
