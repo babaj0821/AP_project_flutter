@@ -86,7 +86,7 @@ public class Main {
 
     public static void readassignment() throws Exception {
         try {
-            File file = new File("assignment.txt");
+            File file = new File("assignemnt.txt");
             FileInputStream fis = new FileInputStream(file);
             BufferedReader br = new BufferedReader(new InputStreamReader(fis));
             String data = "";
