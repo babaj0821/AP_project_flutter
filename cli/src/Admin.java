@@ -211,7 +211,7 @@ public class Admin {
             Student s = findstudentObj(id);
             if (s != null) {
                 System.out.println("this student alredy exist");
-            }else{
+            } else {
                 Student student = new Student(id);
             }
         } catch (Exception e) {
