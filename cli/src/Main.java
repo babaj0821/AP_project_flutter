@@ -9,11 +9,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.*;
+import main.*;
+
+import main.Admin;
+import main.Assignment;
+import main.Course;
 
 public class Main {
     public static void readsudent() throws Exception {
         try {
-            File file = new File("student.txt");
+            File file = new File("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+ "student.txt");
             FileInputStream fis = new FileInputStream(file);
             BufferedReader br = new BufferedReader(new InputStreamReader(fis));
             String data = "";
@@ -45,7 +50,7 @@ public class Main {
 
     public static void readteacher() throws Exception {
         try {
-            File file = new File("teacher.txt");
+            File file = new File("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\" + "teacher.txt");
             FileInputStream fis = new FileInputStream(file);
             BufferedReader br = new BufferedReader(new InputStreamReader(fis));
             String data = "";
@@ -64,7 +69,7 @@ public class Main {
 
     public static void readcourse() throws Exception {
         try {
-            File file = new File("course.txt");
+            File file = new File("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+"course.txt");
             FileInputStream fis = new FileInputStream(file);
             BufferedReader br = new BufferedReader(new InputStreamReader(fis));
             String data = "";
@@ -86,7 +91,7 @@ public class Main {
 
     public static void readassignment() throws Exception {
         try {
-            File file = new File("assignemnt.txt");
+            File file = new File("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+"assignemnt.txt");
             FileInputStream fis = new FileInputStream(file);
             BufferedReader br = new BufferedReader(new InputStreamReader(fis));
             String data = "";
@@ -107,7 +112,7 @@ public class Main {
     }
 
     public static void writestudent() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("student.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+"student.txt"))) {
             List<Student> students = Admin.getStudents();
             for (int i = 0; i < students.size(); i++) {
                 Student student = students.get(i);
@@ -127,7 +132,7 @@ public class Main {
     }
 
     public static void writeteacher() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("teacher.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+"teacher.txt"))) {
             List<Teacher> teachers = Admin.getTeachers();
             for (int i = 0; i < teachers.size(); i++) {
                 Teacher teacher = teachers.get(i);
@@ -145,7 +150,7 @@ public class Main {
     }
 
     public static void writeassignemnt() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("assignemnt.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+"assignemnt.txt"))) {
             List<Assignment> assignments = Admin.getAssignments();
             for (int i = 0; i < assignments.size(); i++) {
                 Assignment assignment = assignments.get(i);
@@ -163,7 +168,7 @@ public class Main {
     }
 
     public static void writecourse() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("course.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+"course.txt"))) {
             List<Course> courses = Admin.getCourses();
             for (int i = 0; i < courses.size(); i++) {
                 Course course = courses.get(i);

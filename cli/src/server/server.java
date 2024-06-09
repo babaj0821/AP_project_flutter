@@ -1,3 +1,4 @@
+package server;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import main.*;
 
 public class server {
     private ServerSocket server;
@@ -45,6 +47,8 @@ public class server {
 
     public static void main(String[] args) throws Exception {
         ServerSocket serverSocket = new ServerSocket(8888);
+        List<Student>s = Admin.getStudents();
+        System.out.println(s);
         server server = new server(serverSocket);
         server.startServer();
     }
