@@ -55,7 +55,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     children: [
                       CircleAvatar(
                         radius: 50.0,
-                        backgroundImage: AssetImage('assets/avatar.png'), // Replace with your asset or network image
+                       // backgroundImage: AssetImage('assets/avatar.png'), // Replace with your asset or network image
                       ),
                       SizedBox(height: 16.0),
                       TextFormField(

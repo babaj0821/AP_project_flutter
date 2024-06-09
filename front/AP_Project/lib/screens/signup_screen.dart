@@ -1,6 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:icons_plus/icons_plus.dart';
 import 'package:ap_project/screens/signin_screen.dart';
+import 'package:ap_project/screens/user_profile_page.dart';
 import 'package:ap_project/theme/theme.dart';
 import 'package:ap_project/widgets/custom_scaffold.dart';
 
@@ -13,7 +15,57 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formSignupKey = GlobalKey<FormState>();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool agreePersonalData = true;
+
+  Future<void> _sendDataToServer(String username, String password) async {
+    try {
+      // Replace with your server's IP address and port
+      final socket = await Socket.connect('192.168.43.66', 8888);
+
+      print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
+
+      // Send username and password to the server
+      socket.write('s-$username-$password\u0000');
+      await socket.flush(); // Ensure data is sent
+      print('Data sent to server: s-$username-$password\u0000');
+
+      // Listen for responses from the server
+      socket.listen((data) {
+        final response = String.fromCharCodes(data).trim();
+        print('Response from server: $response'); // Print the response for debugging
+
+        if (response == '1') {
+          // Navigate to the homepage on successful signup
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => UserProfilePage()),
+          );
+        } else {
+          // Show error message if signup failed
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(response)),
+          );
+        }
+      }, onDone: () {
+        print('Connection closed by server');
+        socket.destroy(); // Close the socket after data is received
+      }, onError: (error) {
+        print('Socket error: $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Socket error: $error')),
+        );
+        socket.destroy(); // Ensure the socket is closed on error
+      });
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -45,7 +97,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       // get started text
                       Text(
-                        'خوش آمدید',
+                        'درود',
                         style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.w900,
@@ -55,39 +107,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 40.0,
                       ),
-                      // full name
                       TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'لطفا نام خود را وارد کنید';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          label: const Text('نام'),
-                          hintText: 'نام',
-                          hintStyle: const TextStyle(
-                            color: Colors.black26,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 25.0,
-                      ),
-                      // email
-                      TextFormField(
+                        controller: _usernameController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'لطفا شماره دانشجویی خود را وارد کنید';
@@ -102,13 +123,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -117,8 +138,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 25.0,
                       ),
-                      // password
                       TextFormField(
+                        controller: _passwordController,
                         obscureText: true,
                         obscuringCharacter: '*',
                         validator: (value) {
@@ -135,13 +156,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -160,7 +181,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 agreePersonalData = value!;
                               });
                             },
-                            activeColor: Colors.white,
+                            activeColor: lightColorScheme.primary,
                           ),
                           const Text(
                             'I agree to the processing of ',
@@ -172,7 +193,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             'Personal data',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color:lightColorScheme.primary,
+                              color: lightColorScheme.primary,
                             ),
                           ),
                         ],
@@ -187,6 +208,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onPressed: () {
                             if (_formSignupKey.currentState!.validate() &&
                                 agreePersonalData) {
+                              _sendDataToServer(
+                                _usernameController.text,
+                                _passwordController.text,
+                              );
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Processing Data'),
@@ -206,7 +231,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 30.0,
                       ),
-
                       // already have an account
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

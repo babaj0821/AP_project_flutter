@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:ap_project/screens/signup_screen.dart';
+import 'package:ap_project/screens/user_profile_page.dart';
 import 'package:ap_project/widgets/custom_scaffold.dart';
 import '../theme/theme.dart';
 
@@ -21,6 +24,44 @@ class _SignInScreenState extends State<SignInScreen> {
     _studentIdController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _sendDataToServer(String username, String password) async {
+    try {
+      // Replace with your server's IP address and port
+      final socket = await Socket.connect('192.168.43.66',8888);
+      print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
+      // Send student ID and password to the server
+      socket.write('l-$username-$password\u0000');
+      await socket.flush(); // Ensure data is sent
+      print('Data sent to server: l-$username-$password\u0000');
+
+      // Listen for responses from the server
+      socket.listen((data) {
+        final response = String.fromCharCodes(data).trim();
+        print('Response from server: $response');
+        if (response == '1') {
+          // Navigate to the homepage on successful sign-in
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) =>  UserProfilePage()),
+          );
+        } else {
+          // Show error message if sign-in failed
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(response)),
+          );
+        }
+      });
+
+      // Close the socket
+      await socket.close();
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 
   @override
@@ -134,15 +175,15 @@ class _SignInScreenState extends State<SignInScreen> {
                         child: ElevatedButton(
                           onPressed: () {
                             if (_formSignInKey.currentState?.validate() ?? false) {
-                              if (rememberPassword) {
-                                Navigator.pushReplacementNamed(context, '/profile');
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Please agree to the processing of personal data'),
-                                  ),
-                                );
-                              }
+                              _sendDataToServer(
+                                _studentIdController.text,
+                                _passwordController.text,
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Processing Data'),
+                                ),
+                              );
                             }
                           },
                           child: const Text('Log in'),
