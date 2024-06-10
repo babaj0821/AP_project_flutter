@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:ap_project/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ap_project/screens/signup_screen.dart';
 import 'package:ap_project/screens/user_profile_page.dart';
@@ -44,7 +45,7 @@ class _SignInScreenState extends State<SignInScreen> {
           // Navigate to the homepage on successful sign-in
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) =>  UserProfilePage()),
+            MaterialPageRoute(builder: (context) =>  HomeScreen()),
           );
         } else {
           // Show error message if sign-in failed
