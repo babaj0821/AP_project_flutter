@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import main.*;
+import database.*;
 
 public class server {
     private ServerSocket server;
@@ -55,7 +56,10 @@ public class server {
 }
 
 class ClientHandler implements Runnable {
-    private static List<Student> students = Admin.getStudents(); // Assuming Admin.getStudents() returns a list of students
+    private static List<Student> students = new ArrayList<>();
+    private static List<Teacher> teachers = new ArrayList<>();
+    private static List<Course> courses = new ArrayList<>();
+    private static List<Assignment> assignments = new ArrayList<>();
     private Socket socket;
     private DataInputStream input;
     private DataOutputStream output;
@@ -65,6 +69,10 @@ class ClientHandler implements Runnable {
             this.socket = socket;
             input = new DataInputStream(socket.getInputStream());
             output = new DataOutputStream(socket.getOutputStream());
+            teachers = databasehandler.readteacher();
+            courses = databasehandler.readcourse();
+            students = databasehandler.readsudent();
+            assignments = databasehandler.readassignment();
             System.out.println("Server: connected");
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,15 +80,16 @@ class ClientHandler implements Runnable {
     }
 
     public int checkPasswordAndUsername(String password, String username) throws Exception {
-        List<Student>s = Admin.getStudents();
-        for (int i = 0 ; i < s.size() ; i++) {
-            if (password.equals(s.get(i).getPassword()) && username.equals(s.get(i).getStudentId())) {
+        for (int i = 0 ; i < students.size() ; i++) {
+            if (password.equals(students.get(i).getPassword()) && username.equals(students.get(i).getStudentId())) {
                 return 1; // Successful login
-            } else if (password.equals(s.get(i).getPassword())) {
+            } else if (password.equals(students.get(i).getPassword())) {
                 return 2; // Password correct, username incorrect
-            } else if (username.equals(s.get(i).getStudentId())) {
+            } else if (username.equals(students.get(i).getStudentId())) {
                 return 3; // Username correct, password incorrect
             }
+            System.out.println(students.get(i).getPassword());
+            System.out.println(students.get(i).getStudentId());
         }
         return 4;
     }
@@ -100,7 +109,7 @@ class ClientHandler implements Runnable {
                     s.setPassword(data[2]);
                     output("1"); // Assuming 's' is for some other command
                 } else if (data[0].equals("l")) {
-                    int code = checkPasswordAndUsername(data[1], data[2]);
+                    int code = checkPasswordAndUsername(data[2], data[1]);
                     output(String.valueOf(code));
                 }
             } catch (Exception e) {
