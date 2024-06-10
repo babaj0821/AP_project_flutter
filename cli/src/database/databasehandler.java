@@ -17,10 +17,47 @@ import main.Student;
 import main.Teacher;
 
 public class databasehandler {
-    public databasehandler(){
-
+    private static List<Student> students;
+    private static List<Teacher> teachers;
+    private static List<Course> courses;
+    private static List<Assignment> assignments ;
+    public static List<Assignment> getAssignments() {
+        return assignments;
     }
-        public static List<Student> readsudent() throws Exception {
+    public static List<Course> getCourses() {
+        return courses;
+    }
+    public static List<Student> getStudents() {
+        return students;
+    }
+    public static List<Teacher> getTeachers() {
+        return teachers;
+    }
+    public static void readdata() throws Exception{
+        teachers = readteacher();
+        Admin.setTeachers(teachers);
+        courses = readcourse();
+        Admin.setCourses(courses);
+        students = readsudent();
+        Admin.setStudents(students);
+        assignments = readassignment();
+        Admin.setAssignments(assignments);
+    }
+    public static void writedata(){
+        writeassignemnt(assignments);
+        writecourse(courses);
+        writestudent(students);
+        writeteacher(teachers);
+    }
+    public static Course findcourse(String code){
+        for(int i = 0 ; i < courses.size() ; i++){
+            if (courses.get(i).getCodecourse().equals(code)) {
+                return courses.get(i);
+            }
+        }
+        return null;
+    }
+     public static List<Student> readsudent() throws Exception {
         try {
             File file = new File("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+ "student.txt");
             FileInputStream fis = new FileInputStream(file);
@@ -39,7 +76,7 @@ public class databasehandler {
                     s.setPassword(student[1]);
                 }
                 for (int i = 2; i < student.length; i = i + 2) {
-                    Course c = Admin.getAdmin().findcourseObj(student[i]);
+                    Course c = findcourse(student[i]);
                     c.assignGrade(s, Double.parseDouble(student[i + 1]));
                     s.addCourse(c);
                     c.setActive(true);
@@ -116,9 +153,8 @@ public class databasehandler {
                 if (data == null)
                     break;
                 String[] assignment = data.split("/");
-                Course c = Admin.getAdmin().findcourseObj(assignment[0]);
-                Assignment a = new Assignment(c,
-                        assignment[1], LocalDateTime.parse(assignment[2]));
+                Course c = findcourse(assignment[0]);
+                Assignment a = new Assignment(c,assignment[1], LocalDateTime.parse(assignment[2]));
                 c.addassignment(a);
                 assignments.add(a);
             }
@@ -141,8 +177,13 @@ public class databasehandler {
                 } else {
                     writer.write(student.getStudentId() + "/" + student.getPassword() + "/");
                     for (int j = 0; j < c.size(); j++) {
-                        writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student) + "\n");
+                        if (j == c.size() - 1) {
+                            writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student)); 
+                            break;
+                        }
+                        writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student) + "/");
                     }
+                    writer.newLine();
                 }
             }
         } catch (IOException e) {

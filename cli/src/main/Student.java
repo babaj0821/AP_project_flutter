@@ -7,6 +7,7 @@ import java.util.Map;
 public class Student {
     private String studentId;
     private List<Course> enrollmentCourses;
+    List<Assignment>assignments;
     private int numberOfCourses;
     private int numberOfEnrollmentUnits;
     private double totalAverageGrade;
@@ -16,12 +17,13 @@ public class Student {
     public Student(String studentId) throws Exception {
         this.studentId = studentId;
         this.enrollmentCourses = new ArrayList<>();
+        assignments = new ArrayList<>();
         this.numberOfCourses = 0;
         this.numberOfEnrollmentUnits = 0;
         this.totalAverageGrade = 0.0;
         this.currentSemesterAverage = 0.0;
-        Admin a = Admin.getAdmin();
-        a.addstudenttolist(this);
+        // Admin a = Admin.getAdmin();
+        // a.addstudenttolist(this);
     }
     public String getPassword() {
         return password;

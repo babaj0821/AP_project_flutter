@@ -10,189 +10,16 @@ import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.*;
 import main.*;
+import database.databasehandler;
 
 import main.Admin;
 import main.Assignment;
 import main.Course;
 
 public class Main {
-    public static void readsudent() throws Exception {
-        try {
-            File file = new File("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+ "student.txt");
-            FileInputStream fis = new FileInputStream(file);
-            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-            String data = "";
-            while (true) {
-                data = br.readLine();
-                if (data == null)
-                    break;
-                String[] student = data.split("/");
-                Student s = new Student(student[0]);
-                if (student[1] == null) {
-                    s.setPassword(null);
-                } else {
-                    s.setPassword(student[1]);
-                }
-                for (int i = 2; i < student.length; i = i + 2) {
-                    Course c = Admin.getAdmin().findcourseObj(student[i]);
-                    c.assignGrade(s, Double.parseDouble(student[i + 1]));
-                    s.addCourse(c);
-                    c.setActive(true);
-                    c.addStudent(s);
-                    c.setActive(false);
-                }
-            }
-            br.close();
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-    }
-
-    public static void readteacher() throws Exception {
-        try {
-            File file = new File("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\" + "teacher.txt");
-            FileInputStream fis = new FileInputStream(file);
-            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-            String data = "";
-            while (true) {
-                data = br.readLine();
-                if (data == null)
-                    break;
-                String[] teacher = data.split("/");
-                Teacher t = new Teacher(teacher[0], teacher[1], teacher[2]);
-            }
-            br.close();
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-    }
-
-    public static void readcourse() throws Exception {
-        try {
-            File file = new File("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+"course.txt");
-            FileInputStream fis = new FileInputStream(file);
-            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-            String data = "";
-            while (true) {
-                data = br.readLine();
-                if (data == null)
-                    break;
-                String[] course = data.split("/");
-                Teacher teacher = Admin.findtaecherObj(course[1]);
-                Course c = new Course(course[0], teacher, Integer.parseInt(course[2]), course[3], course[4]);
-                teacher.addCourse(c);
-
-            }
-            br.close();
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-    }
-
-    public static void readassignment() throws Exception {
-        try {
-            File file = new File("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+"assignemnt.txt");
-            FileInputStream fis = new FileInputStream(file);
-            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-            String data = "";
-            while (true) {
-                data = br.readLine();
-                if (data == null)
-                    break;
-                String[] assignment = data.split("/");
-                Course c = Admin.getAdmin().findcourseObj(assignment[0]);
-                Assignment a = new Assignment(c,
-                        assignment[1], LocalDateTime.parse(assignment[2]));
-                c.addassignment(a);
-            }
-            br.close();
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-    }
-
-    public static void writestudent() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+"student.txt"))) {
-            List<Student> students = Admin.getStudents();
-            for (int i = 0; i < students.size(); i++) {
-                Student student = students.get(i);
-                List<Course> c = student.getEnrollmentCourses();
-                if (c == null) {
-                    writer.write(student.getStudentId());
-                } else {
-                    writer.write(student.getStudentId() + "/" + student.getPassword() + "/");
-                    for (int j = 0; j < c.size(); j++) {
-                        writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student) + "\n");
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-    }
-
-    public static void writeteacher() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+"teacher.txt"))) {
-            List<Teacher> teachers = Admin.getTeachers();
-            for (int i = 0; i < teachers.size(); i++) {
-                Teacher teacher = teachers.get(i);
-                if (i == teachers.size() - 1) {
-                    writer.write(teacher.getName() + "/" + teacher.getSurname() + "/" + teacher.getTeacherID());
-                    break;
-                }
-
-                writer.write(teachers.get(i).getName() + "/" +
-                        teachers.get(i).getSurname() + "/" + teachers.get(i).getTeacherID() + "\n");
-            }
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-    }
-
-    public static void writeassignemnt() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+"assignemnt.txt"))) {
-            List<Assignment> assignments = Admin.getAssignments();
-            for (int i = 0; i < assignments.size(); i++) {
-                Assignment assignment = assignments.get(i);
-                if (i == assignments.size() - 1) {
-                    writer.write(assignment.getCourseName().getCodecourse() + "/" +
-                            assignment.getAssignmentName() + "/" + assignment.getDeadline());
-                    break;
-                }
-                writer.write(assignment.getCourseName().getCodecourse() + "/" +
-                        assignment.getAssignmentName() + "/" + assignment.getDeadline() + "\n");
-            }
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-    }
-
-    public static void writecourse() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\USER\\Desktop\\cli\\cli\\src\\database\\"+"course.txt"))) {
-            List<Course> courses = Admin.getCourses();
-            for (int i = 0; i < courses.size(); i++) {
-                Course course = courses.get(i);
-                if (i == courses.size() - 1) {
-                    writer.write(course.getCourseName() + "/" + course.getTeacher().getTeacherID() + "/"
-                            + course.getNumberOfUnits() + "/" +
-                            course.getExaminationDate() + "/" + course.getCodecourse());
-                    break;
-                }
-                writer.write(course.getCourseName() + "/" + course.getTeacher().getTeacherID() + "/"
-                        + course.getNumberOfUnits() + "/" +
-                        course.getExaminationDate() + "/" + course.getCodecourse() + "\n");
-            }
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-    }
-
     public static void main(String[] args) throws Exception {
         Scanner input = new Scanner(System.in);
-        readteacher();
-        readcourse();
-        readsudent();
-        readassignment();
+        databasehandler.readdata();
         System.out.print("\033[H\033[2J");
         System.out.flush();
 
@@ -542,10 +369,7 @@ public class Main {
             System.out.print("\033[H\033[2J");
             System.out.flush();
         }
-        writecourse();
-        writeassignemnt();
-        writestudent();
-        writeteacher();
+        databasehandler.writedata();
         System.out.println("goodbye!");
         input.close();
     }

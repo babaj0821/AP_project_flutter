@@ -12,7 +12,7 @@ public class Course {
     private List<Student> students;
     private boolean isActive = false;
     private List<String> exercises;
-    private List<Assignment> assignments;
+    private List<Assignment> assignments = new ArrayList<>();
     private int numberOfExercises;
     private String examinationDate;
     private boolean hasActiveProjects;
@@ -31,13 +31,8 @@ public class Course {
         this.hasActiveProjects = true;
         this.numberOfRegisteredStudents = 0;
         this.grades = new HashMap<>();
-        this.assignments = new ArrayList<>();
-        Admin a = Admin.getAdmin();
-        try {
-            a.addcoursetolist(this);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        // this.assignments = new ArrayList<>();
+        // Admin a = Admin.getAdmin();
     }
 
     public void setActive(boolean isActive) {
@@ -109,6 +104,18 @@ public class Course {
             System.out.println("this class is empty");
             return 0.0;
         }
+    }
+    public  <K, V> K getKeyByValue(Map<K, V> map, V value) {
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            if (value.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null; // Value not found
+    }
+    public String findTopStudent(){
+        String id = getKeyByValue(grades, this.findHighestGrade()).getStudentId();
+        return id;
     }
 
     public void printStudents() {

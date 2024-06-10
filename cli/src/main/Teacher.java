@@ -17,8 +17,8 @@ public class Teacher {
         this.teacherID = teacherID;
         this.numberOfCourses = 0;
         this.courses = new ArrayList<>();
-        Admin a = Admin.getAdmin();
-        a.addteachertolist(this);
+        // Admin a = Admin.getAdmin();
+        // a.addteachertolist(this);
     }
 
     public String getName() {

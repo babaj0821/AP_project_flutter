@@ -5,12 +5,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Admin {
-    private static List<Student> students = new ArrayList<>();
-    private static List<Teacher> teachers = new ArrayList<>();
-    private static List<Course> courses = new ArrayList<>();
-    private static List<Assignment> assignments = new ArrayList<>();
+    private static List<Student> students;
+    private static List<Teacher> teachers;
+    private static List<Course> courses;
+    private static List<Assignment> assignments;
     private static Admin instance;
-
+    public static void setAssignments(List<Assignment> assignments) {
+        Admin.assignments = assignments;
+    }
+    public static void setCourses(List<Course> courses) {
+        Admin.courses = courses;
+    }
+    public static void setStudents(List<Student> students) {
+        Admin.students = students;
+    }
+    public static void setTeachers(List<Teacher> teachers) {
+        Admin.teachers = teachers;
+    }
+    
     public void addstudenttolist(Student s) throws Exception {
         if (s == null)
             throw new NullPointerException();
@@ -215,6 +227,7 @@ public class Admin {
                 System.out.println("this student alredy exist");
             } else {
                 Student student = new Student(id);
+                students.add(student);
             }
         } catch (Exception e) {
             e.getMessage();
@@ -250,10 +263,12 @@ public class Admin {
 
         if (numberOfUnits > 0 && teacher != null) {
             Course c = new Course(courseName, teacher, numberOfUnits, examinationDate, codecourse);
+            courses.add(c);
             teacher.addCourse(c);
             System.out.println("the course has been added");
         } else if (numberOfUnits > 0 && teacher == null) {
             Course c = new Course(courseName, null, numberOfUnits, examinationDate, codecourse);
+            courses.add(c);
             System.out.println("this course dosent have any teacher add one to be shown to students");
         } else if (numberOfUnits <= 0) {
             throw new Exception("the course unit must be above 0");
