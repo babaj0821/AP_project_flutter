@@ -6,6 +6,7 @@ import 'package:ap_project/theme/theme.dart';
 import 'package:ap_project/screens/user_profile_page.dart';
 
 void main() {
+
   runApp(const MyApp());
 }
 
