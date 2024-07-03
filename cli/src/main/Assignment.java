@@ -13,8 +13,6 @@ public class Assignment {
         this.assignmentName = assignmentName;
         this.deadline = deadline;
         this.isActive = true;
-        // Admin a = Admin.getAdmin();
-        // a.addassignmenttolist(this);
     }
     public String getAssignmentName() {
         return assignmentName;

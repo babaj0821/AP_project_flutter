@@ -10,6 +10,8 @@ import java.io.OutputStreamWriter;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -63,12 +65,14 @@ class ClientHandler implements Runnable {
     private Socket socket;
     private DataInputStream input;
     private DataOutputStream output;
+    private BufferedWriter out;
 
     ClientHandler(Socket socket) {
         try {
             this.socket = socket;
             this.input = new DataInputStream(socket.getInputStream());
             output = new DataOutputStream(socket.getOutputStream());
+            out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             databasehandler.readdata();
             teachers = databasehandler.getTeachers();
             courses = databasehandler.getCourses();
@@ -89,10 +93,31 @@ class ClientHandler implements Runnable {
             } else if (username.equals(students.get(i).getStudentId())) {
                 return 3; // Username correct, password incorrect
             }
-            System.out.println(students.get(i).getPassword());
-            System.out.println(students.get(i).getStudentId());
         }
         return 4;
+    }
+    public boolean usernamechecker(String username){
+        for(int i = 0 ; i < students.size() ; i ++){
+            Student student = students.get(i);
+            if (student.getStudentId().equals(username)) {
+                return false; // username is recurrent
+            }
+        }
+        return true; //there is no problem
+    }
+    public boolean passwordchecker(String password , String username){
+        // Check if password contains the username
+        Pattern pattern1 = Pattern.compile(username);
+        Matcher matcher1 = pattern1.matcher(password);
+        boolean cond1 = matcher1.find();
+    
+        // Check if password matches the regex for uppercase, lowercase, and minimum length
+        Pattern pattern2 = Pattern.compile("^(?=.*[A-Z])(?=.*[a-z]).{8,}$");
+        Matcher matcher2 = pattern2.matcher(password);
+        boolean cond2 = matcher2.find();
+    
+        // Return true if password does not contain username and matches the regex
+        return !cond1 && cond2;
     }
     public Student findStudent(String studentID){
         for(int i  = 0 ; i < students.size() ; i++){
@@ -113,7 +138,44 @@ class ClientHandler implements Runnable {
         }
         return "wrong";
     } 
+    public String givetask(String studentID){
+        // taskes needed to be sent to the app
+        List<Assignment> s = findStudent(studentID).getAssignments();
+        StringBuilder data = new StringBuilder();
+        for(int i = 0 ; i < s.size() ; i ++){
+            if (i == s.size() - 1) {
+                data.append(s.get(i).getCourseName().getCourseName() +":"+s.get(i).getAssignmentName() + "/" + s.get(i).getDeadline().toString());
+                break;
+            }
+            data.append(s.get(i).getCourseName().getCourseName() +":"+ s.get(i).getAssignmentName() + "/" + s.get(i).getDeadline().toString() + ",");
+        }
+        return data.toString();
 
+    }
+    public void completedTask(String studentID ,String nametask){
+        Student s = findStudent(studentID);
+        s.removeAssignment(nametask);
+    }
+    public String profiledata(String studentID){
+        Student s = findStudent(studentID);
+        StringBuilder data = new StringBuilder();
+        data.append(s.getName() +"-"+"student" +"-"+ studentID + "-1402_1403");
+        int numunit = 0;
+        for(int i = 0 ; i < s.getEnrollmentCourses().size() ; i++){
+            numunit+= s.getEnrollmentCourses().get(i).getNumberOfUnits();
+        }
+        data.append("-" + numunit + "-" + s.findTotalAvg() + "-" + s.getPassword());
+        return data.toString();
+    }
+    public String updatepassword(String studentID  ,String passeord){
+        Student s = findStudent(studentID);
+        if (passwordchecker(passeord, studentID)) {
+            s.setPassword(passeord);
+            return "password changed";
+        }else{
+            return "password is wrong";
+        }
+    }
     @Override
     public void run() {
         String order = "";
@@ -121,23 +183,37 @@ class ClientHandler implements Runnable {
                 System.out.println("waiting");
                 order = input();
                 System.out.println(order);
-                System.out.println(order);
-                System.out.println(Admin.getAdmin());
-                System.out.println("get");
                 String[] data = order.split("-");
                 System.out.println(data[1]);
                 switch (data[1]) {
                     case "sign":
-                        Student s = new Student(data[2]);
-                        s.setPassword(data[3]);
-                        students.add(s);
-                        output("1");
-                        break;
+                        if (usernamechecker(data[2]) && passwordchecker(data[3], data[2]) ) {
+                            Student s = new Student(data[2]);
+                            s.setPassword(data[3]);
+                            // addin the student to data base
+                            students.add(s);
+                            output("1");
+                            break;
+                        }else{
+                            output("2");
+                        }
                     case "login":
                         output(String.valueOf(checkPasswordAndUsername(data[3], data[2])));
                         break;
                     case "course":
                         output(returncourse(data[0] , data[2]));
+                        break;
+                    case "giveTask":
+                        output(givetask(data[0]));
+                        break;
+                    case "completedTask":
+                        completedTask(data[0], data[2]);
+                        break;
+                    case "profile":
+                        output(profiledata(data[0]));
+                        break;
+                    case "update_password":
+                        output(updatepassword(data[0], data[2]));
                         break;
                     default:
                         break;
@@ -152,7 +228,7 @@ class ClientHandler implements Runnable {
         closeConnection();
     }
 
-    public synchronized String input() {
+    public  String input() {
         StringBuilder order = new StringBuilder();
         try {
             int character = input.read();
@@ -161,7 +237,7 @@ class ClientHandler implements Runnable {
                     break;
                 }
                 order.append((char) character);
-                character = input.read();
+                character = input.read(); // reading the message
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -173,8 +249,11 @@ class ClientHandler implements Runnable {
     public void output(String code) {
         try {
             System.out.println(code);
-            output.writeBytes(code); // Then send the actual message
-            output.flush();
+            // output.writeBytes(code); // Then send the actual message
+            // output.flush();
+            out.write(code);
+            out.newLine();
+            out.flush();
             System.out.println("Response sent" + code);
         } catch (Exception e) {
             e.printStackTrace();

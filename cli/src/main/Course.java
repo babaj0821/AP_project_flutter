@@ -31,8 +31,6 @@ public class Course {
         this.hasActiveProjects = true;
         this.numberOfRegisteredStudents = 0;
         this.grades = new HashMap<>();
-        // this.assignments = new ArrayList<>();
-        // Admin a = Admin.getAdmin();
     }
 
     public void setActive(boolean isActive) {

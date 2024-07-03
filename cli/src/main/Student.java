@@ -13,6 +13,13 @@ public class Student {
     private double totalAverageGrade;
     private double currentSemesterAverage;
     private String password;
+    private String name;
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Student(String studentId) throws Exception {
         this.studentId = studentId;
@@ -22,8 +29,12 @@ public class Student {
         this.numberOfEnrollmentUnits = 0;
         this.totalAverageGrade = 0.0;
         this.currentSemesterAverage = 0.0;
-        // Admin a = Admin.getAdmin();
-        // a.addstudenttolist(this);
+    }
+    public void addassignment(Assignment a){
+        assignments.add(a);
+    }
+    public List<Assignment> getAssignments() {
+        return assignments;
     }
     public String getPassword() {
         return password;
@@ -72,8 +83,8 @@ public class Student {
         return studentId;
     }
 
-    public void findTotalAvg() {
-        int sum = 0;
+    public double findTotalAvg() {
+        double sum = 0.0;
         int len = 0;
         for (Course course : enrollmentCourses) {
             for (Map.Entry<Student, Double> entry : course.getGrades().entrySet()) {
@@ -86,8 +97,20 @@ public class Student {
         if (len == 0)throw new ArithmeticException("you are not in any course");
 
         this.totalAverageGrade = len == 0 ? 0 : (double) sum / len;
+        return totalAverageGrade;
     }
     public List<Course> getEnrollmentCourses() {
         return enrollmentCourses;
+    }
+    public void removeAssignment(String name){
+        String[] name2 = name.split(":");
+        for(int i = 0 ; i < assignments.size() ; i++){
+            if (assignments.get(i).getAssignmentName().equals(name2[1]) &&
+                assignments.get(i).getCourseName().getCourseName().equals(name2[0])) {
+                assignments.remove(i);
+                System.out.println( "deleted:"+assignments.get(i).getCourseName().getCourseName() +"-"+ assignments.get(i).getAssignmentName());
+                break;
+            }
+        }
     }
 }

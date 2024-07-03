@@ -33,15 +33,25 @@ public class databasehandler {
     public static List<Teacher> getTeachers() {
         return teachers;
     }
+    public static void addassignment(Assignment a){
+        if (a == null) throw new NullPointerException();
+        for(int i = 0 ; i < a.getCourseName().getAssignments().size() ; i++){
+            if (a.getCourseName().getAssignments().get(i).getAssignmentName().equals(a.getAssignmentName())) {
+                System.out.println("exists");
+            }
+        }
+        assignments.add(a);
+        System.out.println("added");
+    }
     public static void readdata() throws Exception{
         teachers = readteacher();
         Admin.setTeachers(teachers);
         courses = readcourse();
         Admin.setCourses(courses);
-        students = readsudent();
-        Admin.setStudents(students);
         assignments = readassignment();
         Admin.setAssignments(assignments);
+        students = readsudent();
+        Admin.setStudents(students);
     }
     public static void writedata(){
         writeassignemnt(assignments);
@@ -69,17 +79,23 @@ public class databasehandler {
                 if (data == null)
                     break;
                 String[] student = data.split("/");
-                Student s = new Student(student[0]);
-                if (student[1] == null) {
+                Student s = new Student(student[1]);
+                s.setName(student[0]);
+                if (student[2] == null) {
                     s.setPassword(null);
                 } else {
-                    s.setPassword(student[1]);
+                    s.setPassword(student[2]);
                 }
-                for (int i = 2; i < student.length; i = i + 2) {
+                for (int i =3; i < student.length; i = i + 2) {
                     Course c = findcourse(student[i]);
                     c.assignGrade(s, Double.parseDouble(student[i + 1]));
                     s.addCourse(c);
                     c.setActive(true);
+                    System.out.println(c.getAssignments());
+                    for(int j = 0 ; j < c.getAssignments().size() ; j++){
+                        s.addassignment(new Assignment(c, c.getAssignments().get(j).getAssignmentName(), c.getAssignments().get(j).getDeadline()));
+                    }
+                    System.out.println(s.getAssignments());
                     c.addStudent(s);
                     c.setActive(false);
                 }
@@ -173,9 +189,9 @@ public class databasehandler {
                 Student student = students.get(i);
                 List<Course> c = student.getEnrollmentCourses();
                 if (c == null) {
-                    writer.write(student.getStudentId());
+                    writer.write(student.getName() + "/" + student.getStudentId());
                 } else {
-                    writer.write(student.getStudentId() + "/" + student.getPassword() + "/");
+                    writer.write(student.getName() + "/" + student.getStudentId() + "/" + student.getPassword() + "/");
                     for (int j = 0; j < c.size(); j++) {
                         if (j == c.size() - 1) {
                             writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student)); 

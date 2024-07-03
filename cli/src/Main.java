@@ -37,8 +37,8 @@ public class Main {
                     System.out.println(
                             "5.addAssignmenttocourse\n6.removeAssignment\n7.removeCourse\n8.newCourse\n9.setcourseactive\n10.addStudent\n11.removeStudent\n12.addTeacher\n13.removeTeacher\n14.quit");
                     command = input.next();
-                    System.out.flush();
                     System.out.print("\033[H\033[2J");
+                    System.out.flush();
                     switch (command) {
                         case "1":
                             System.out.println("enter studentID:");
@@ -170,10 +170,14 @@ public class Main {
                         case "10":
                             System.out.println("enter studentId");
                             String id = input.next();
+                            System.out.println("enter the name of student");
+                            String names = input.next();
+                            System.out.println("enter the password");
+                            String pass = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try {
-                                admin.addNewStudent(id);
+                                admin.addNewStudent(id ,names , pass);
                             } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
@@ -327,6 +331,7 @@ public class Main {
                             System.out.flush();
                             try {
                                 te.giveaddassignment(Admin.getAdmin().findcourseObj(codecourse), assignment);
+                                databasehandler.addassignment(assignment);
                             } catch (Exception e) {
                                 System.out.println(e);
                                 continue;
@@ -369,6 +374,7 @@ public class Main {
             System.out.print("\033[H\033[2J");
             System.out.flush();
         }
+        System.out.println(Admin.getAssignments());
         databasehandler.writedata();
         System.out.println("goodbye!");
         input.close();
