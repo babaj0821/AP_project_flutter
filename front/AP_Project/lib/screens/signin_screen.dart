@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:ap_project/screens/home_screen.dart';
-import 'package:ap_project/student.dart';
 import 'package:flutter/material.dart';
 import 'package:ap_project/screens/signup_screen.dart';
 import 'package:ap_project/screens/user_profile_page.dart';
 import 'package:ap_project/widgets/custom_scaffold.dart';
 import '../theme/theme.dart';
+import 'package:ap_project/student.dart'; // Import the globals file
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -30,35 +30,47 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Future<void> _sendDataToServer(String username, String password) async {
     try {
-      // Replace with your server's IP address and port
-      final socket = await Socket.connect('192.168.43.66',8888);
+      final socket = await Socket.connect('192.168.43.66', 8888);
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
-      // Send student ID and password to the server
+
       socket.write('$username-login-$username-$password\u0000');
-      await socket.flush(); // Ensure data is sent
+      await socket.flush();
       print('Data sent to server: login-$username-$password\u0000');
 
       // Listen for responses from the server
-      socket.listen((data) {
-        final response = String.fromCharCodes(data).trim();
-        print('Response from server: $response');
-        if (response == '1') {
-          //student s =  student(studentId: username, password: password);
-          // Navigate to the homepage on successful sign-in
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) =>  HomeScreen()),
-          );
-        } else {
-          // Show error message if sign-in failed
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response)),
-          );
-        }
-      });
+      socket.listen(
+            (data) {
+          final response = String.fromCharCodes(data).trim();
+          print('Response from server: $response');
+          if (response == '1') {
+            // Update the global username variable on successful sign-in
+            globalUsername = username;
 
-      // Close the socket
-      await socket.close();
+            // Navigate to the homepage on successful sign-in
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          } else {
+            // Show error message if sign-in failed
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(response)),
+            );
+          }
+        },
+        onError: (error) {
+          print('Error: $error');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $error')),
+          );
+          socket.destroy();
+        },
+        onDone: () {
+          print('Connection closed by server');
+          socket.destroy();
+        },
+        cancelOnError: true,
+      );
     } catch (e) {
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -122,13 +134,13 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -155,13 +167,13 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                           border: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                              color: Colors.black12, // Default border color
+                              color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -218,7 +230,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       const SizedBox(
                         height: 25.0,
                       ),
-                      // don't have an account
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

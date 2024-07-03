@@ -1,72 +1,24 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:ap_project/student.dart';
-
-class TasksPage extends StatefulWidget {
+class WorkPage extends StatefulWidget {
   @override
-  _TasksPageState createState() => _TasksPageState();
+  _WorkPageState createState() => _WorkPageState();
 }
 
-class _TasksPageState extends State<TasksPage> {
-  final List<Map<String, String>> _tasks = [];
-  final List<String> _completedTasks = [];
+class _WorkPageState extends State<WorkPage> {
+  final List<Map<String, String>> _tasks = [
+    {"title": "آز ریز - تمرین 1", "time": "09:00 صبح"},
+    {"title": "تمرین الگوریتم", "time": "10:00 صبح"},
+    {"title": "انتخاب واحد", "time": "11:00 صبح"},
+    {"title": "تکمیل آز OS", "time": "12:00 ظهر"},
+  ];
+
+  final List<String> _completedTasks = [
+    "تکمیل آز ریز - تمرین 0",
+    "بررسی فایل‌ها تمرین"
+  ];
+
   final TextEditingController _taskController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _receiveTasksFromServer();
-  }
-
-  Future<void> _receiveTasksFromServer() async {
-    try {
-      final socket = await Socket.connect('192.168.43.66', 8888);
-      print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
-      socket.write('$globalUsername-giveTask\u0000');
-      await socket.flush();
-      print('Data sent to server:402243039-giveTask\u0000');
-
-      // Listen for responses from the server
-      socket.listen((data) {
-        final response = String.fromCharCodes(data).trim();
-        print('Response from server: $response');
-
-        // Assuming server sends tasks in format: "task1-time1,task2-time2,..."
-        final tasks = response.split(',');
-        setState(() {
-          _tasks.clear();
-          for (var task in tasks) {
-            final taskDetails = task.split('/');
-            if (taskDetails.length == 2) {
-              _tasks.add({"title": taskDetails[0], "time": taskDetails[1]});
-            }
-          }
-        });
-      });
-    } catch (e) {
-      print('Error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
-  }
-
-  Future<void> _sendCompletedTaskToServer(String taskTitle) async {
-    try {
-      final socket = await Socket.connect('192.168.43.66', 8888);
-      print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
-      socket.write('$globalUsername-completedTask-$taskTitle\u0000');
-      await socket.flush(); // Ensure data is sent
-      print('Completed task sent to server: completed-$taskTitle\u0000');
-      await socket.close();
-    } catch (e) {
-      print('Error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
-  }
 
   void _addTask() {
     if (_taskController.text.isNotEmpty && _timeController.text.isNotEmpty) {
@@ -77,14 +29,6 @@ class _TasksPageState extends State<TasksPage> {
       });
       Navigator.of(context).pop();
     }
-  }
-
-  void _markTaskAsCompleted(int index) {
-    setState(() {
-      _completedTasks.add(_tasks[index]["title"]!);
-      _sendCompletedTaskToServer(_tasks[index]["title"]!);
-      _tasks.removeAt(index);
-    });
   }
 
   void _showAddTaskDialog() {
@@ -128,7 +72,7 @@ class _TasksPageState extends State<TasksPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Tasks",
+          "کارها",
           style: TextStyle(fontSize: 18),
         ),
         centerTitle: true,
@@ -144,10 +88,7 @@ class _TasksPageState extends State<TasksPage> {
               itemBuilder: (context, index) {
                 return Card(
                   child: ListTile(
-                    leading: IconButton(
-                      icon: Icon(Icons.check_circle, color: Colors.green),
-                      onPressed: () => _markTaskAsCompleted(index),
-                    ),
+                    leading: Icon(Icons.check_circle, color: Colors.green),
                     title: Text(_tasks[index]["title"]!),
                     subtitle: Text(_tasks[index]["time"]!),
                   ),
@@ -157,7 +98,7 @@ class _TasksPageState extends State<TasksPage> {
             SizedBox(height: 32.0),
             Align(
               alignment: Alignment.centerRight,
-              child: Text("Completed Tasks", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+              child: Text("کارهای انجام شده", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
             ),
             ListView.builder(
               shrinkWrap: true,

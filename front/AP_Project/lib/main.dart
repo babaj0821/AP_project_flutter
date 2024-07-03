@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ap_project/screens/welcome_screen.dart';
 import 'package:ap_project/theme/theme.dart';
 import 'package:ap_project/screens/user_profile_page.dart';
-
+import 'package:ap_project/screens/news_screen.dart';
 void main() {
 
   runApp(const MyApp());
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => WelcomeScreen(),
-        '/profile': (context) => UserProfilePage(),
+        '/profile': (context) => ProfileScreen(),
         '/home': (context) => HomeScreen(),
       },
     );

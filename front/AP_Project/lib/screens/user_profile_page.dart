@@ -1,136 +1,217 @@
 import 'package:flutter/material.dart';
+import 'package:ap_project/student.dart';
+import 'dart:io';
 
-class UserProfilePage extends StatefulWidget {
+class ProfileScreen extends StatefulWidget {
   @override
-  _UserProfilePageState createState() => _UserProfilePageState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _UserProfilePageState extends State<UserProfilePage> {
-  bool _isEditing = false;
+class _ProfileScreenState extends State<ProfileScreen> {
+  String name = '';
+  String role = '';
+  String studentNumber = '';
+  String currentTerm = '';
+  String totalUnits = '';
+  String totalAverage = '';
+  String password = '';
+  late TextEditingController _passwordController;
+  bool _passwordVisible = false;
 
-  final TextEditingController _nameController = TextEditingController(text: 'ali alavi');
-  final TextEditingController _emailController = TextEditingController(text: 'alialavi@example.com');
-  final TextEditingController _passwordController = TextEditingController();
-
-  void _toggleEdit() {
-    setState(() {
-      _isEditing = !_isEditing;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _passwordController = TextEditingController();
+    _fetchProfileData();
   }
 
-  void _logout() {
-    Navigator.pushReplacementNamed(context, '/');
+  Future<void> _fetchProfileData() async {
+    try {
+      final socket = await Socket.connect('192.168.43.66', 8888);
+      print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
+
+      // Send request for profile data
+      socket.write('$globalUsername-profile\u0000');
+      await socket.flush();
+      print('Data request sent to server: profile-data\u0000');
+
+      // Listen for responses from the server
+      socket.listen(
+            (data) {
+          final response = String.fromCharCodes(data).trim();
+          print('Response from server: $response');
+
+          // Assuming the server sends data in the format: name-role-studentNumber-currentTerm-totalUnits-totalAverage-password
+          final profileData = response.split('-');
+          if (profileData.length == 7) {
+            setState(() {
+              name = profileData[0];
+              role = profileData[1];
+              studentNumber = profileData[2];
+              currentTerm = profileData[3];
+              totalUnits = profileData[4];
+              totalAverage = profileData[5];
+              password = profileData[6];
+              _passwordController.text = password;
+            });
+          } else {
+            print('Unexpected data format from server');
+          }
+          socket.destroy();
+        },
+        onError: (error) {
+          print('Error: $error');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $error')),
+          );
+          socket.destroy();
+        },
+        onDone: () {
+          print('Connection closed by server');
+          socket.destroy();
+        },
+        cancelOnError: true,
+      );
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 
-  void _saveChanges() {
-    // Save changes to backend
-    _toggleEdit();
+  Future<void> _updatePassword(String newPassword) async {
+    try {
+      final socket = await Socket.connect('192.168.43.66', 8888);
+      print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
+
+      // Send new password to the server
+      socket.write('$globalUsername-update_password-$newPassword\u0000');
+      await socket.flush();
+      print('Password update sent to server: update-password-$newPassword\u0000');
+
+      // Listen for server response
+      socket.listen(
+            (data) {
+          final response = String.fromCharCodes(data).trim();
+          print('Response from server: $response');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(response)),
+          );
+          socket.destroy();
+        },
+        onError: (error) {
+          print('Error: $error');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $error')),
+          );
+          socket.destroy();
+        },
+        onDone: () {
+          print('Connection closed by server');
+          socket.destroy();
+        },
+        cancelOnError: true,
+      );
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Profile'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: _logout,
-          ),
-        ],
+        title: Text('Profile'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Center(
         child: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(height: 20),
+              CircleAvatar(
+                radius: 50,
+                backgroundImage: AssetImage('assets/images/img.png'), // Add your image asset here
+              ),
+              SizedBox(height: 10),
+              Text(
+                name,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              Text(role),
+              SizedBox(height: 20),
               Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(16),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        radius: 50.0,
-                        //backgroundImage: AssetImage('assets/images/img.png'),
-                      ),
-                      SizedBox(height: 16.0),
-                      TextFormField(
-                        controller: _nameController,
-                        enabled: _isEditing,
-                        decoration: InputDecoration(
-                          labelText: 'Name',
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      TextFormField(
-                        controller: _emailController,
-                        enabled: _isEditing,
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      if (!_isEditing)
-                        ElevatedButton(
-                          onPressed: _toggleEdit,
-                          child: Text('Edit Profile'),
-                        ),
-                      if (_isEditing)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            ElevatedButton(
-                              onPressed: _saveChanges,
-                              child: Text('Save'),
-                            ),
-                            SizedBox(width: 8.0),
-                            ElevatedButton(
-                              onPressed: _toggleEdit,
-                              child: Text('Cancel'),
-                            ),
-                          ],
-                        ),
+                      _buildInfoRow('شماره دانشجویی', studentNumber),
+                      _buildInfoRow('ترم جاری', currentTerm),
+                      _buildInfoRow('تعداد واحد', totalUnits),
+                      _buildInfoRow('معدل کل', totalAverage),
+                      _buildPasswordField(),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 16.0),
-              if (_isEditing)
-                Card(
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Change Password',
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        TextFormField(
-                          controller: _passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: 'New Password',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  _updatePassword(_passwordController.text);
+                },
+                child: Text('Update Password'),
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+          Text(
+            value,
+            style: TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: _passwordController,
+        decoration: InputDecoration(
+          labelText: 'Password',
+          border: OutlineInputBorder(),
+          suffixIcon: IconButton(
+            icon: Icon(
+              _passwordVisible ? Icons.visibility : Icons.visibility_off,
+            ),
+            onPressed: () {
+              setState(() {
+                _passwordVisible = !_passwordVisible;
+              });
+            },
+          ),
+        ),
+        obscureText: !_passwordVisible,
       ),
     );
   }

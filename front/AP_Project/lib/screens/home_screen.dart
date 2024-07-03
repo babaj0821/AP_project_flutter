@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ap_project/screens/task_screen.dart';
 import 'package:ap_project/screens/classes_screen.dart';
+import 'package:ap_project/screens/assignment_screen.dart';
+import 'package:ap_project/screens/news_screen.dart';
+import 'package:ap_project/student.dart';
+import 'package:ap_project/screens/user_profile_page.dart'; // Import the ProfileWidget
+
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -13,8 +18,9 @@ class _HomeScreenState extends State<HomeScreen> {
     HomePage(),
     TasksPage(),
     CoursePage(),
-    NewsPage(),
+    NewsScreen(),
     WorkPage(),
+    ProfileScreen(), // Add ProfileWidget to the list of pages
   ];
 
   void _onItemTapped(int index) {
@@ -28,15 +34,25 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "خلاصه",
+          "$globalUsername",
           style: TextStyle(fontSize: 18),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfileScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: [
-
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'سرا'),
           BottomNavigationBarItem(icon: Icon(Icons.work), label: 'تسک ها'),
           BottomNavigationBarItem(icon: Icon(Icons.school), label: 'کلاسا'),
@@ -137,18 +153,5 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class NewsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text('خبرها Page'));
-  }
-}
-class WorkPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text('works Page'));
   }
 }

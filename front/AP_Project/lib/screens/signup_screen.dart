@@ -5,6 +5,7 @@ import 'package:ap_project/screens/signin_screen.dart';
 import 'package:ap_project/screens/user_profile_page.dart';
 import 'package:ap_project/theme/theme.dart';
 import 'package:ap_project/widgets/custom_scaffold.dart';
+import 'package:ap_project/student.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -27,7 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
 
       // Send username and password to the server
-      socket.write('sign-$username-$password\u0000');
+      socket.write('$globalUsername-sign-$username-$password\u0000');
       await socket.flush(); // Ensure data is sent
       print('Data sent to server: sign-$username-$password\u0000');
 
@@ -40,7 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           // Navigate to the homepage on successful signup
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => UserProfilePage()),
+            MaterialPageRoute(builder: (context) => ProfileScreen()),
           );
         } else {
           // Show error message if signup failed

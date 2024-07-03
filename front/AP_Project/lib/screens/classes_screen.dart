@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:ap_project/student.dart';
 import 'package:ap_project/screens/signin_screen.dart';
 class CoursePage extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class _CoursePageState extends State<CoursePage> {
         print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
 
         // Send course code to the server
-        socket.write('402243127-course-$courseCode\u0000');
+        socket.write('$globalUsername-course-$courseCode\u0000');
         await socket.flush();
         print('Data sent to server:402243039-course-$courseCode\u0000');
 
