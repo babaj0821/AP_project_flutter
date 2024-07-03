@@ -220,13 +220,15 @@ public class Admin {
         }
     }
 
-    public void addNewStudent(String id) {
+    public void addNewStudent(String id ,String name , String pass) {
         try {
             Student s = findstudentObj(id);
             if (s != null) {
                 System.out.println("this student alredy exist");
             } else {
                 Student student = new Student(id);
+                student.setName(name);
+                student.setPassword(pass);
                 students.add(student);
             }
         } catch (Exception e) {

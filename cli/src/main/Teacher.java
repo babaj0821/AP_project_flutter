@@ -17,8 +17,6 @@ public class Teacher {
         this.teacherID = teacherID;
         this.numberOfCourses = 0;
         this.courses = new ArrayList<>();
-        // Admin a = Admin.getAdmin();
-        // a.addteachertolist(this);
     }
 
     public String getName() {
@@ -146,7 +144,7 @@ public class Teacher {
             System.out.println("has been removed");
             return;
         } else {
-            System.out.println("youu not able to access this course");
+            System.out.println("you are not able to access this course");
         }
     }
 

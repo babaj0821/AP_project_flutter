@@ -8,6 +8,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.Buffer;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class APP {
     public static String input(DataInputStream input) {
@@ -36,20 +39,25 @@ public class APP {
             e.printStackTrace();
         }
     }
+    public static boolean passwordchecker(String password, String username) {
+        // Check if password contains the username
+        Pattern pattern1 = Pattern.compile(username);
+        Matcher matcher1 = pattern1.matcher(password);
+        boolean cond1 = matcher1.find();
+    
+        // Check if password matches the regex for uppercase, lowercase, and minimum length
+        Pattern pattern2 = Pattern.compile("^(?=.*[A-Z])(?=.*[a-z]).{8,}$");
+        Matcher matcher2 = pattern2.matcher(password);
+        boolean cond2 = matcher2.find();
+    
+        // Return true if password does not contain username and matches the regex
+        return !cond1 && cond2;
+    }
+    
     public static void main(String[] args) throws Exception{
-        Socket s = new Socket("localhost" , 8888);
-        BufferedWriter bf = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
-        bf.write("login-402243039-13751383");
-        bf.newLine();
-        bf.flush();
-        Thread.sleep(5000);
-        bf.write("course-2");
-        bf.newLine();
-        bf.flush();
-        Thread.sleep(5000);
-        bf.write("exit");
-        bf.newLine();
-        bf.flush();
+        Scanner s = new Scanner(System.in);
+        String i = s.nextLine();
+        System.out.println(passwordchecker(i, "iman"));
 
 
     }
