@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ap_project/screens/task_screen.dart';
+import 'package:ap_project/screens/classes_screen.dart';
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -11,7 +12,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     HomePage(),
     TasksPage(),
-    ClassesPage(),
+    CoursePage(),
     NewsPage(),
     WorkPage(),
   ];
@@ -145,14 +146,6 @@ class NewsPage extends StatelessWidget {
     return Center(child: Text('خبرها Page'));
   }
 }
-
-class ClassesPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text('کلاسا Page'));
-  }
-}
-
 class WorkPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

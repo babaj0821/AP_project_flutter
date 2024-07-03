@@ -27,9 +27,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
 
       // Send username and password to the server
-      socket.write('s-$username-$password\u0000');
+      socket.write('sign-$username-$password\u0000');
       await socket.flush(); // Ensure data is sent
-      print('Data sent to server: s-$username-$password\u0000');
+      print('Data sent to server: sign-$username-$password\u0000');
 
       // Listen for responses from the server
       socket.listen((data) {

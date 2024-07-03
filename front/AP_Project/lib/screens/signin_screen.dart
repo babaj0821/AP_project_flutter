@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:ap_project/screens/home_screen.dart';
+import 'package:ap_project/student.dart';
 import 'package:flutter/material.dart';
 import 'package:ap_project/screens/signup_screen.dart';
 import 'package:ap_project/screens/user_profile_page.dart';
@@ -33,15 +34,16 @@ class _SignInScreenState extends State<SignInScreen> {
       final socket = await Socket.connect('192.168.43.66',8888);
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
       // Send student ID and password to the server
-      socket.write('l-$username-$password\u0000');
+      socket.write('$username-login-$username-$password\u0000');
       await socket.flush(); // Ensure data is sent
-      print('Data sent to server: l-$username-$password\u0000');
+      print('Data sent to server: login-$username-$password\u0000');
 
       // Listen for responses from the server
       socket.listen((data) {
         final response = String.fromCharCodes(data).trim();
         print('Response from server: $response');
         if (response == '1') {
+          //student s =  student(studentId: username, password: password);
           // Navigate to the homepage on successful sign-in
           Navigator.pushReplacement(
             context,
