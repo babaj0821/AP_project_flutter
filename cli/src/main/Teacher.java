@@ -46,6 +46,9 @@ public class Teacher {
         if (course != null && !course.getStudents().contains(student)) {
             course.addStudent(student);
             student.addCourse(course);
+            for(int i = 0 ; i < course.getAssignments().size() ; i++){
+                student.addassignment(new Assignment(course, course.getAssignments().get(i).getAssignmentName(), course.getAssignments().get(i).getDeadline()));
+            }
             System.out.println("the student has been added");
             return;
         } else {
@@ -57,6 +60,9 @@ public class Teacher {
     public void removeStudentFromCourse(Student student, String courseName) throws Exception {
         Course course = findCourseByName(courseName);
         if (course != null && course.getStudents().contains(student)) {
+            for(int i = 0 ; i < course.getAssignments().size() ; i++){
+                student.removeAssignment(course.getAssignments().get(i).getAssignmentName());
+            }
             course.removeStudent(student);
             student.removeCourse(course);
             System.out.println("has been removed");
@@ -128,6 +134,10 @@ public class Teacher {
 
         if (courses.contains(course)) {
             course.addassignment(assignment);
+            List<Student> s = course.getStudents();
+            for(int i = 0 ; i < s.size() ; i ++){
+                s.get(i).addassignment(new Assignment(course, assignment.getAssignmentName(), assignment.getDeadline()));
+            }
             System.out.println("assignment has been given");
         } else {
             System.out.println("you can not add assignment to this course");

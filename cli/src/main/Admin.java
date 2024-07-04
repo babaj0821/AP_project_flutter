@@ -52,6 +52,9 @@ public class Admin {
         Course course = findcourseObj(codecourse);
         if (student != null && course != null) {
             if (course.getStudents().contains(student)) {
+                for(int i = 0 ; i < course.getAssignments().size() ; i++){
+                    student.removeAssignment(course.getAssignments().get(i).getAssignmentName());
+                }
                 course.removeStudent(student);
                 student.removeCourse(course);
                 System.out.println("student has been removed");
@@ -101,6 +104,9 @@ public class Admin {
             } else {
                 course.addStudent(student);
                 student.addCourse(course);
+                for(int i = 0 ; i < course.getAssignments().size() ; i ++){
+                    student.addassignment(new Assignment(course, course.getAssignments().get(i).getAssignmentName(), course.getAssignments().get(i).getDeadline()));
+                }
                 System.out.println("student has been added");
                 return;
             }

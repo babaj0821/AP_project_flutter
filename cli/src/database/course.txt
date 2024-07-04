@@ -1,2 +1,3 @@
 ap/40/3/20tir/2
 madar/50/4/30khordad/3
+phy/60/3/10tir/5

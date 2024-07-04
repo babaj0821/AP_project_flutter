@@ -152,6 +152,7 @@ public class Main {
                                 admin.newCourse(name_course, teacherId, unit, examinationDate, codeofcourse);
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;
@@ -164,6 +165,7 @@ public class Main {
                                 admin.setCourseactive(codeofcourse);
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;
@@ -180,6 +182,7 @@ public class Main {
                                 admin.addNewStudent(id ,names , pass);
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;
@@ -192,6 +195,7 @@ public class Main {
                                 admin.removeStudent(id1);
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;
@@ -208,6 +212,7 @@ public class Main {
                                 admin.addNewTeacher(name, surname, id2);
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;
@@ -220,6 +225,7 @@ public class Main {
                                 admin.removeTeacher(id3);
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;
@@ -259,6 +265,7 @@ public class Main {
                                         Admin.getAdmin().findcourseObj(codecourse).getCourseName());
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;
@@ -274,6 +281,7 @@ public class Main {
                                         Admin.getAdmin().findcourseObj(codecourse).getCourseName());
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;
@@ -291,6 +299,7 @@ public class Main {
                                         Admin.getAdmin().findcourseObj(codecourse).getCourseName(), grade);
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;
@@ -303,6 +312,7 @@ public class Main {
                                 te.addCourse(Admin.getAdmin().findcourseObj(codecourse));
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;
@@ -315,6 +325,7 @@ public class Main {
                                 te.removeCourse((Admin.getAdmin().findcourseObj(codecourse)));
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;
@@ -334,6 +345,7 @@ public class Main {
                                 databasehandler.addassignment(assignment);
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;
@@ -349,6 +361,7 @@ public class Main {
                                         Admin.getAdmin().findAssignmentObj(nameofassignment));
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;
@@ -361,6 +374,7 @@ public class Main {
                                 te.setActive(Admin.getAdmin().findcourseObj(codecourse));
                             } catch (Exception e) {
                                 System.out.println(e);
+                                databasehandler.writedata();
                                 continue;
                             }
                             break;

@@ -6,13 +6,19 @@ public class Assignment {
     private Course courseName;
     private String assignmentName;
     private LocalDateTime deadline;
-    private boolean isActive;
+    private boolean  hasbeendone;
+
 
     public Assignment(Course courseName, String assignmentName, LocalDateTime deadline) throws Exception {
         this.courseName = courseName;
         this.assignmentName = assignmentName;
         this.deadline = deadline;
-        this.isActive = true;
+    }
+    public void setHasbeendone(boolean hasbeendone) {
+        this.hasbeendone = hasbeendone;
+    }
+    public boolean getHasbeendone(){
+        return hasbeendone;
     }
     public String getAssignmentName() {
         return assignmentName;
@@ -35,9 +41,5 @@ public class Assignment {
 
     public void changeDeadline(LocalDateTime deadline) {
         this.deadline = deadline;
-    }
-
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
     }
 }

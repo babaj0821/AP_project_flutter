@@ -107,10 +107,40 @@ public class Student {
         for(int i = 0 ; i < assignments.size() ; i++){
             if (assignments.get(i).getAssignmentName().equals(name2[1]) &&
                 assignments.get(i).getCourseName().getCourseName().equals(name2[0])) {
-                assignments.remove(i);
-                System.out.println( "deleted:"+assignments.get(i).getCourseName().getCourseName() +"-"+ assignments.get(i).getAssignmentName());
+                    assignments.get(i).setHasbeendone(true);
                 break;
             }
         }
+    }
+    public String bestgrade(){
+        double max = 0.0;
+        if (enrollmentCourses.size() == 0) {
+            return "0.0";
+        }
+        String namecourse = "";
+        for(int i = 0 ; i < enrollmentCourses.size() ; i++){
+            double grade = enrollmentCourses.get(i).grade(this);
+            if (max < grade) {
+                max = grade;
+                namecourse = enrollmentCourses.get(i).getCourseName();
+            }
+        }
+        return namecourse+":"+ max;
+    }
+    public String worstgrade(){
+        double min = 20;
+        String namecourse = "";
+        if (enrollmentCourses.size() == 0) {
+            return "0.0";
+        }
+        for(int i = 0 ; i < enrollmentCourses.size() ; i++){
+            double grade = enrollmentCourses.get(i).grade(this);
+            if (min > grade) {
+                min = grade;
+                namecourse = enrollmentCourses.get(i).getCourseName();
+
+            }
+        }
+        return namecourse +":"+ min;
     }
 }

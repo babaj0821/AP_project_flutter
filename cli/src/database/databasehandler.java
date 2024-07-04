@@ -92,12 +92,29 @@ public class databasehandler {
                     s.addCourse(c);
                     c.setActive(true);
                     System.out.println(c.getAssignments());
-                    for(int j = 0 ; j < c.getAssignments().size() ; j++){
-                        s.addassignment(new Assignment(c, c.getAssignments().get(j).getAssignmentName(), c.getAssignments().get(j).getDeadline()));
-                    }
-                    System.out.println(s.getAssignments());
                     c.addStudent(s);
                     c.setActive(false);
+                }
+                data = br.readLine();
+                if (data == null) {
+                    students.add(s);
+                    continue;
+                }
+                String[] a = data.split("/");
+                if (a.length == 1) {
+                    students.add(s);
+                    continue;
+                }
+                for(int i = 0 ; i < a.length ; i = i + 3){
+                    Assignment b = findAssignment(a[i] , a[i + 1]);
+                    if (b != null) {
+                        if (a[i + 2].equals("false")) {
+                            b.setHasbeendone(false);
+                        }else{
+                            b.setHasbeendone(true);
+                        }
+                        s.addassignment(b);
+                    }
                 }
                 students.add(s);
             }
@@ -107,6 +124,16 @@ public class databasehandler {
             System.out.println(e);
         }
         return null;
+    }
+    public static Assignment findAssignment(String codecorse , String name){
+        for(int i = 0 ; i < assignments.size() ; i++){
+            if (assignments.get(i).getAssignmentName().equals(name) && 
+            assignments.get(i).getCourseName().getCodecourse().equals(codecorse)) {
+                return assignments.get(i);
+            }
+        }
+        return null;
+        
     }
 
     public static List<Teacher> readteacher() throws Exception {
@@ -188,16 +215,21 @@ public class databasehandler {
             for (int i = 0; i < students.size(); i++) {
                 Student student = students.get(i);
                 List<Course> c = student.getEnrollmentCourses();
+                List<Assignment> a = student.getAssignments();
                 if (c == null) {
                     writer.write(student.getName() + "/" + student.getStudentId());
                 } else {
                     writer.write(student.getName() + "/" + student.getStudentId() + "/" + student.getPassword() + "/");
                     for (int j = 0; j < c.size(); j++) {
                         if (j == c.size() - 1) {
-                            writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student)); 
+                            writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student) + "/"); 
                             break;
                         }
                         writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student) + "/");
+                    }
+                    writer.newLine();
+                    for(int j  = 0 ; j < a.size() ; j++){
+                        writer.write(a.get(j).getCourseName().getCodecourse() + "/" + a.get(j).getAssignmentName() + "/" + a.get(j).getHasbeendone() + "/");
                     }
                     writer.newLine();
                 }

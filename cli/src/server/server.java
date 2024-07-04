@@ -4,17 +4,12 @@ import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.io.*;
-import java.net.*;
-import java.util.*;
 import main.*;
 import database.*;
 
@@ -131,9 +126,16 @@ class ClientHandler implements Runnable {
         List<Course>studetncourses = findStudent(studentID).getEnrollmentCourses();
         for(int i = 0 ; i < studetncourses.size() ; i++){
             if (studetncourses.get(i).getCodecourse().equals(codecourse)) {
-                Course c = studetncourses.get(i);  
-                System.out.println("course_details-"+ c.getCourseName() + "-" + c.getTeacher().getName() + " " + c.getTeacher().getSurname() +"-"+ c.getNumberOfUnits() + "-"  + c.getAssignments().size() + "-" + c.findTopStudent());
-                return "course_details-"+ c.getCourseName() + "-" + c.getTeacher().getName() + " " + c.getTeacher().getSurname()+ "-"+ c.getNumberOfUnits() + "-"  + c.getAssignments().size() + "-" + c.findTopStudent();
+                Course c = studetncourses.get(i);
+                int coursea = 0;
+                Student s = findStudent(studentID);  
+                for(int j = 0 ; j < s.getAssignments().size() ; j++){
+                    if (s.getAssignments().get(j).getCourseName().getCodecourse().equals(codecourse) && !(s.getAssignments().get(j).getHasbeendone())) {
+                        coursea++;
+                    }
+                }
+                System.out.println("course_details-"+ c.getCourseName() + "-" + c.getTeacher().getName() + " " + c.getTeacher().getSurname() +"-"+ c.getNumberOfUnits() + "-"  + coursea + "-" + c.findTopStudent());
+                return "course_details-"+ c.getCourseName() + "-" + c.getTeacher().getName() + " " + c.getTeacher().getSurname()+ "-"+ c.getNumberOfUnits() + "-"  + coursea + "-" + c.findTopStudent();
             }
         }
         return "wrong";
@@ -143,13 +145,15 @@ class ClientHandler implements Runnable {
         List<Assignment> s = findStudent(studentID).getAssignments();
         StringBuilder data = new StringBuilder();
         for(int i = 0 ; i < s.size() ; i ++){
-            if (i == s.size() - 1) {
-                data.append(s.get(i).getCourseName().getCourseName() +":"+s.get(i).getAssignmentName() + "/" + s.get(i).getDeadline().toString());
-                break;
+            if (!s.get(i).getHasbeendone()) {
+                data.append(s.get(i).getCourseName().getCourseName() +":"+ s.get(i).getAssignmentName() + "/" + s.get(i).getDeadline().toString() + ",");
+
             }
-            data.append(s.get(i).getCourseName().getCourseName() +":"+ s.get(i).getAssignmentName() + "/" + s.get(i).getDeadline().toString() + ",");
+
         }
-        return data.toString();
+        String result = data.toString().substring(0 , data.length());
+
+        return result;
 
     }
     public void completedTask(String studentID ,String nametask){
@@ -157,8 +161,18 @@ class ClientHandler implements Runnable {
         s.removeAssignment(nametask);
     }
     public String profiledata(String studentID){
+        System.out.println(students);
         Student s = findStudent(studentID);
         StringBuilder data = new StringBuilder();
+        if(s.getName().equals(null)){
+            data.append("guest" +"-"+"student" +"-"+ studentID + "-1402_1403" +
+            "-" + 0 + "-" + 0 + "-" + s.getPassword());
+            return data.toString();
+        }else if(!s.getName().equals(null) && s.getEnrollmentCourses().size() == 0){
+            data.append(s.getName() +"-"+"student" +"-"+ studentID + "-1402_1403" +
+            "-" + 0 + "-" + 0 + "-" + s.getPassword());
+            return data.toString();
+        }
         data.append(s.getName() +"-"+"student" +"-"+ studentID + "-1402_1403");
         int numunit = 0;
         for(int i = 0 ; i < s.getEnrollmentCourses().size() ; i++){
@@ -176,6 +190,48 @@ class ClientHandler implements Runnable {
             return "password is wrong";
         }
     }
+    public String summary(String studentID){
+        Student s = findStudent(studentID);
+        int homeworkdone = 0;
+        int homeworkisnotdone = 0;
+        for(int i = 0 ; i < s.getAssignments().size() ; i++){
+            if (s.getAssignments().get(i).getHasbeendone()) {
+                homeworkdone++;
+            }else{
+                homeworkisnotdone++;
+            }
+        }
+        StringBuilder data = new StringBuilder();
+        int exams = s.getEnrollmentCourses().size();
+        data.append("summary:" + homeworkdone + "-" + homeworkisnotdone + "-" + exams +"-" + s.bestgrade() + "-" + s.worstgrade());
+        return data.toString();
+    }
+    public String homeworkdone(String studentID){
+        Student s = findStudent(studentID);
+        StringBuilder data = new StringBuilder();
+        data.append("done:");
+        for(int i = 0 ; i < s.getAssignments().size() ; i++){
+            if ((s.getAssignments().get(i)).getHasbeendone()) {
+                data.append(s.getAssignments().get(i).getCourseName().getCourseName() + ":" +
+                s.getAssignments().get(i).getAssignmentName() + ":" + "done" + "-");
+            }
+        }
+        String result = data.toString().substring(0, data.length() - 1);
+        return result;
+    }
+    public String homeworknotdone(String studentID){
+        Student s = findStudent(studentID);
+        StringBuilder data = new StringBuilder();
+        data.append("notdone:");
+        for(int i = 0 ; i < s.getAssignments().size() ; i++){
+            if (!(s.getAssignments().get(i)).getHasbeendone()) {
+                data.append(s.getAssignments().get(i).getCourseName().getCourseName() + ":" +
+                s.getAssignments().get(i).getAssignmentName() + ":" + "notdone" + "-");
+            }
+        }
+        String result = data.toString().substring(0, data.length() - 1);
+        return result;
+    }
     @Override
     public void run() {
         String order = "";
@@ -190,12 +246,19 @@ class ClientHandler implements Runnable {
                         if (usernamechecker(data[2]) && passwordchecker(data[3], data[2]) ) {
                             Student s = new Student(data[2]);
                             s.setPassword(data[3]);
+                            s.setName(data[4]);
                             // addin the student to data base
                             students.add(s);
+                            System.out.println(students);
+                            databasehandler.writeassignemnt(assignments);
+                            databasehandler.writecourse(courses);
+                            databasehandler.writestudent(students);
+                            databasehandler.writeteacher(teachers);
                             output("1");
                             break;
                         }else{
                             output("2");
+                            break;
                         }
                     case "login":
                         output(String.valueOf(checkPasswordAndUsername(data[3], data[2])));
@@ -214,6 +277,17 @@ class ClientHandler implements Runnable {
                         break;
                     case "update_password":
                         output(updatepassword(data[0], data[2]));
+                        break;
+                    case "getSummary":
+                        output(summary(data[0]));
+                        Thread.sleep(100);
+                        order = input();
+                    case "getNotDoneAssignments":
+                        output(homeworknotdone(data[0]));
+                        Thread.sleep(100);
+                        order = input();
+                    case "getDoneAssignments":
+                        output(homeworkdone(data[0]));
                         break;
                     default:
                         break;
