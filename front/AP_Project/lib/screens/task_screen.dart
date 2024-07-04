@@ -9,7 +9,6 @@ class TasksPage extends StatefulWidget {
 
 class _TasksPageState extends State<TasksPage> {
   final List<Map<String, String>> _tasks = [];
-  final List<String> _completedTasks = [];
   final TextEditingController _taskController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
 
@@ -25,7 +24,7 @@ class _TasksPageState extends State<TasksPage> {
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
       socket.write('$globalUsername-giveTask\u0000');
       await socket.flush();
-      print('Data sent to server:402243039-giveTask\u0000');
+      print('Data sent to server: $globalUsername-giveTask\u0000');
 
       // Listen for responses from the server
       socket.listen((data) {
@@ -80,11 +79,33 @@ class _TasksPageState extends State<TasksPage> {
   }
 
   void _markTaskAsCompleted(int index) {
-    setState(() {
-      _completedTasks.add(_tasks[index]["title"]!);
-      _sendCompletedTaskToServer(_tasks[index]["title"]!);
-      _tasks.removeAt(index);
-    });
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Warning"),
+          content: Text("Are you sure you want to delete this task?"),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Yes"),
+              onPressed: () {
+                setState(() {
+                  _sendCompletedTaskToServer(_tasks[index]["title"]!);
+                  _tasks.removeAt(index);
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showAddTaskDialog() {
@@ -150,23 +171,6 @@ class _TasksPageState extends State<TasksPage> {
                     ),
                     title: Text(_tasks[index]["title"]!),
                     subtitle: Text(_tasks[index]["time"]!),
-                  ),
-                );
-              },
-            ),
-            SizedBox(height: 32.0),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Text("Completed Tasks", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: _completedTasks.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    title: Text(_completedTasks[index]),
                   ),
                 );
               },

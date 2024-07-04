@@ -54,14 +54,14 @@ class _SignInScreenState extends State<SignInScreen> {
           } else {
             // Show error message if sign-in failed
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(response)),
+              SnackBar(content: Text('wrong username or password')),
             );
           }
         },
         onError: (error) {
           print('Error: $error');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: $error')),
+            SnackBar(content: Text('wrong username or password')),
           );
           socket.destroy();
         },
@@ -74,7 +74,7 @@ class _SignInScreenState extends State<SignInScreen> {
     } catch (e) {
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
+        SnackBar(content: Text('wrong username or password')),
       );
     }
   }

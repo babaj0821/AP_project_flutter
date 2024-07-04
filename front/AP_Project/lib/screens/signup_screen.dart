@@ -18,19 +18,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formSignupKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   bool agreePersonalData = true;
 
-  Future<void> _sendDataToServer(String username, String password) async {
+  Future<void> _sendDataToServer(String id, String password, String name) async {
     try {
       // Replace with your server's IP address and port
       final socket = await Socket.connect('192.168.43.66', 8888);
 
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
 
-      // Send username and password to the server
-      socket.write('$globalUsername-sign-$username-$password\u0000');
+      socket.write('$globalUsername-sign-$id-$password-$name\u0000');
       await socket.flush(); // Ensure data is sent
-      print('Data sent to server: sign-$username-$password\u0000');
+      print('Data sent to server: sign-$id-$password-$name\u0000');
 
       // Listen for responses from the server
       socket.listen((data) {
@@ -38,6 +38,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         print('Response from server: $response'); // Print the response for debugging
 
         if (response == '1') {
+          globalUsername = id;
           // Navigate to the homepage on successful signup
           Navigator.pushReplacement(
             context,
@@ -107,6 +108,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       const SizedBox(
                         height: 40.0,
+                      ),
+                      TextFormField(
+                        controller: _nameController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'لطفا نام خود را وارد کنید';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          label: const Text('نام'),
+                          hintText: 'نام',
+                          hintStyle: const TextStyle(
+                            color: Colors.black26,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 25.0,
                       ),
                       TextFormField(
                         controller: _usernameController,
@@ -212,6 +244,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               _sendDataToServer(
                                 _usernameController.text,
                                 _passwordController.text,
+                                _nameController.text,
                               );
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

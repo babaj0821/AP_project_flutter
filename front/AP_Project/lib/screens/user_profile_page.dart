@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ap_project/student.dart';
 import 'dart:io';
 
+import 'signup_screen.dart';
+
 class ProfileScreen extends StatefulWidget {
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -121,6 +123,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> _deleteAccount() async {
+    bool? confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Account'),
+          content: Text('Are you sure you want to delete your account? This action cannot be undone.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text('Delete'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm == true) {
+      try {
+        final socket = await Socket.connect('192.168.43.66', 8888);
+        print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
+        socket.write('delete_account\u0000');
+        await socket.flush();
+        print('Delete account request sent to server');
+
+        // Close the socket after sending the request
+        socket.destroy();
+
+        // Navigate to signup page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SignUpScreen()),
+        );
+      } catch (e) {
+        print('Error: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,6 +217,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _updatePassword(_passwordController.text);
                 },
                 child: Text('Update Password'),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _deleteAccount,
+                child: Text('Delete Account'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red, // Red background for delete button
+                ),
               ),
             ],
           ),

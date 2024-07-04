@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class WorkPage extends StatefulWidget {
   @override
   _WorkPageState createState() => _WorkPageState();
@@ -67,6 +68,13 @@ class _WorkPageState extends State<WorkPage> {
     );
   }
 
+  void _completeTask(int index) {
+    setState(() {
+      _completedTasks.add(_tasks[index]["title"]!);
+      _tasks.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,7 +96,12 @@ class _WorkPageState extends State<WorkPage> {
               itemBuilder: (context, index) {
                 return Card(
                   child: ListTile(
-                    leading: Icon(Icons.check_circle, color: Colors.green),
+                    leading: Checkbox(
+                      value: false,
+                      onChanged: (bool? value) {
+                        _completeTask(index);
+                      },
+                    ),
                     title: Text(_tasks[index]["title"]!),
                     subtitle: Text(_tasks[index]["time"]!),
                   ),
