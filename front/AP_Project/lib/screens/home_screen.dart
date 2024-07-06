@@ -6,6 +6,7 @@ import 'package:ap_project/screens/news_screen.dart';
 import 'package:ap_project/screens/user_profile_page.dart';
 import 'package:ap_project/student.dart';
 import 'assignment_screen.dart';
+import 'signin_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -31,6 +32,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _logout() {
+    // Navigate to the login page and remove all the routes behind
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => SignInScreen()),
+          (Route<dynamic> route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     print('Building HomeScreen');
@@ -43,13 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.person),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProfileScreen()),
-              );
-            },
+            icon: Icon(Icons.logout), // Changed icon to logout
+            onPressed: _logout, // Calls the logout function
           ),
         ],
       ),

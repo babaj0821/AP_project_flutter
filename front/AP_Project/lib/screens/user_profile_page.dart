@@ -152,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       try {
         final socket = await Socket.connect('192.168.43.66', 8888);
         print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
-        socket.write('delete_account\u0000');
+        socket.write('$globalUsername-delete_account\u0000');
         await socket.flush();
         print('Delete account request sent to server');
 
@@ -176,9 +176,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-      ),
+      // appBar: AppBar(
+      //   title: Text('Profile'),
+      // ),
       body: Center(
         child: SingleChildScrollView(
           child: Column(

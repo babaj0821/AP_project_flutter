@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:ap_project/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ap_project/screens/signin_screen.dart';
 import 'package:ap_project/screens/user_profile_page.dart';
@@ -19,18 +20,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _birthDateController = TextEditingController();
   bool agreePersonalData = true;
 
-  Future<void> _sendDataToServer(String id, String password, String name) async {
+  Future<void> _sendDataToServer(String id, String password, String name, String birthDate) async {
     try {
       // Replace with your server's IP address and port
       final socket = await Socket.connect('192.168.43.66', 8888);
 
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
 
-      socket.write('$globalUsername-sign-$id-$password-$name\u0000');
+      socket.write('$globalUsername-sign-$id-$password-$name-$birthDate\u0000');
       await socket.flush(); // Ensure data is sent
-      print('Data sent to server: sign-$id-$password-$name\u0000');
+      print('Data sent to server: sign-$id-$password-$name-$birthDate\u0000');
 
       // Listen for responses from the server
       socket.listen((data) {
@@ -42,7 +44,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           // Navigate to the homepage on successful signup
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => ProfileScreen()),
+            MaterialPageRoute(builder: (context) => HomeScreen()),
           );
         } else {
           // Show error message if signup failed
@@ -204,6 +206,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         height: 25.0,
                       ),
+                      TextFormField(
+                        controller: _birthDateController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'لطفا تاریخ تولد خود را وارد کنید';
+                          }
+                          // Regular expression to check if the date is in the format YYYY-MM-DD
+                          final regex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
+                          if (!regex.hasMatch(value)) {
+                            return 'تاریخ باید به صورت YYYY-MM-DD ';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          label: const Text('تاریخ تولد'),
+                          hintText: 'YYYY-MM-DD',
+                          hintStyle: const TextStyle(
+                            color: Colors.black26,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
                       // i agree to the processing
                       Row(
                         children: [
@@ -245,6 +283,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 _usernameController.text,
                                 _passwordController.text,
                                 _nameController.text,
+                                _birthDateController.text,
                               );
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

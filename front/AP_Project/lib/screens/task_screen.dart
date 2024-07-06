@@ -11,6 +11,7 @@ class _TasksPageState extends State<TasksPage> {
   final List<Map<String, String>> _tasks = [];
   final TextEditingController _taskController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   @override
   void initState() {
@@ -31,14 +32,18 @@ class _TasksPageState extends State<TasksPage> {
         final response = String.fromCharCodes(data).trim();
         print('Response from server: $response');
 
-        // Assuming server sends tasks in format: "task1-time1,task2-time2,..."
+        // Assuming server sends tasks in format: "task1-time1-description1,task2-time2-description2,..."
         final tasks = response.split(',');
         setState(() {
           _tasks.clear();
           for (var task in tasks) {
-            final taskDetails = task.split('/');
-            if (taskDetails.length == 2) {
-              _tasks.add({"title": taskDetails[0], "time": taskDetails[1]});
+            final taskDetails = task.split('-');
+            if (taskDetails.length == 3) {
+              _tasks.add({
+                "title": taskDetails[0],
+                "time": taskDetails[1],
+                "description": taskDetails[2],
+              });
             }
           }
         });
@@ -68,11 +73,16 @@ class _TasksPageState extends State<TasksPage> {
   }
 
   void _addTask() {
-    if (_taskController.text.isNotEmpty && _timeController.text.isNotEmpty) {
+    if (_taskController.text.isNotEmpty && _timeController.text.isNotEmpty && _descriptionController.text.isNotEmpty) {
       setState(() {
-        _tasks.add({"title": _taskController.text, "time": _timeController.text});
+        _tasks.add({
+          "title": _taskController.text,
+          "time": _timeController.text,
+          "description": _descriptionController.text,
+        });
         _taskController.clear();
         _timeController.clear();
+        _descriptionController.clear();
       });
       Navigator.of(context).pop();
     }
@@ -108,6 +118,33 @@ class _TasksPageState extends State<TasksPage> {
     );
   }
 
+  void _showTaskDetails(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(_tasks[index]["title"]!),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Time: ${_tasks[index]["time"]!}", style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(height: 10),
+              Text("Description: ${_tasks[index]["description"]!}"),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showAddTaskDialog() {
     showDialog(
       context: context,
@@ -124,6 +161,10 @@ class _TasksPageState extends State<TasksPage> {
               TextField(
                 controller: _timeController,
                 decoration: InputDecoration(hintText: "Enter Task Time"),
+              ),
+              TextField(
+                controller: _descriptionController,
+                decoration: InputDecoration(hintText: "Enter Task Description"),
               ),
             ],
           ),
@@ -147,13 +188,6 @@ class _TasksPageState extends State<TasksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Tasks",
-          style: TextStyle(fontSize: 18),
-        ),
-        centerTitle: true,
-      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -165,12 +199,8 @@ class _TasksPageState extends State<TasksPage> {
               itemBuilder: (context, index) {
                 return Card(
                   child: ListTile(
-                    leading: IconButton(
-                      icon: Icon(Icons.check_circle, color: Colors.green),
-                      onPressed: () => _markTaskAsCompleted(index),
-                    ),
                     title: Text(_tasks[index]["title"]!),
-                    subtitle: Text(_tasks[index]["time"]!),
+                    onTap: () => _showTaskDetails(index),
                   ),
                 );
               },

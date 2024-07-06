@@ -90,9 +90,9 @@ class _CoursePageState extends State<CoursePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('کلاس‌ها'),
-      ),
+      // appBar: AppBar(
+      //   title: Text('کلاس‌ها'),
+      // ),
       body: ListView.builder(
         itemCount: courses.length,
         itemBuilder: (context, index) {
