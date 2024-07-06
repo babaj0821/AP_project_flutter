@@ -336,8 +336,10 @@ public class Main {
                             String nameofassignment = input.next();
                             System.out.println("enter the deadline:");
                             String time = input.next();
+                            System.out.println("give info about the assignment");
+                            String info = input.next();
                             Assignment assignment = new Assignment(Admin.getAdmin().findcourseObj(codecourse),
-                                    nameofassignment, LocalDateTime.parse(time));
+                                    nameofassignment, LocalDateTime.parse(time) , info);
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try {

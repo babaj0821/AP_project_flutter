@@ -1,4 +1,6 @@
 package main;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -14,6 +16,13 @@ public class Student {
     private double currentSemesterAverage;
     private String password;
     private String name;
+    private LocalDate birth;
+    public LocalDate getBirth() {
+        return birth;
+    }
+    public void setBirth(LocalDate birth) {
+        this.birth = birth;
+    }
     public String getName() {
         return name;
     }

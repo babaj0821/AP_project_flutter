@@ -47,7 +47,7 @@ public class Teacher {
             course.addStudent(student);
             student.addCourse(course);
             for(int i = 0 ; i < course.getAssignments().size() ; i++){
-                student.addassignment(new Assignment(course, course.getAssignments().get(i).getAssignmentName(), course.getAssignments().get(i).getDeadline()));
+                student.addassignment(new Assignment(course, course.getAssignments().get(i).getAssignmentName(), course.getAssignments().get(i).getDeadline() , course.getAssignments().get(i).getAssignmentinfo()));
             }
             System.out.println("the student has been added");
             return;
@@ -136,7 +136,7 @@ public class Teacher {
             course.addassignment(assignment);
             List<Student> s = course.getStudents();
             for(int i = 0 ; i < s.size() ; i ++){
-                s.get(i).addassignment(new Assignment(course, assignment.getAssignmentName(), assignment.getDeadline()));
+                s.get(i).addassignment(new Assignment(course, assignment.getAssignmentName(), assignment.getDeadline() , assignment.getAssignmentinfo()));
             }
             System.out.println("assignment has been given");
         } else {
