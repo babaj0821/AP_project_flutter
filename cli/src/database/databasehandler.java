@@ -6,7 +6,11 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,12 +85,24 @@ public class databasehandler {
                 String[] student = data.split("/");
                 Student s = new Student(student[1]);
                 s.setName(student[0]);
-                if (student[2] == null) {
+                if (student[2].equals(null)) {
+                    s.setBirth(null);
+                }else{
+                    DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+                    try {
+                        LocalDate localDate = LocalDate.parse(student[2], formatter);
+                        System.out.println(localDate);
+                        s.setBirth(localDate);
+                    } catch (DateTimeParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (student[3] == null) {
                     s.setPassword(null);
                 } else {
-                    s.setPassword(student[2]);
+                    s.setPassword(student[3]);
                 }
-                for (int i =3; i < student.length; i = i + 2) {
+                for (int i =4; i < student.length; i = i + 2) {
                     Course c = findcourse(student[i]);
                     c.assignGrade(s, Double.parseDouble(student[i + 1]));
                     s.addCourse(c);
@@ -197,7 +213,7 @@ public class databasehandler {
                     break;
                 String[] assignment = data.split("/");
                 Course c = findcourse(assignment[0]);
-                Assignment a = new Assignment(c,assignment[1], LocalDateTime.parse(assignment[2]));
+                Assignment a = new Assignment(c,assignment[1], LocalDateTime.parse(assignment[2]) , assignment[3]);
                 c.addassignment(a);
                 assignments.add(a);
             }
@@ -217,9 +233,10 @@ public class databasehandler {
                 List<Course> c = student.getEnrollmentCourses();
                 List<Assignment> a = student.getAssignments();
                 if (c == null) {
-                    writer.write(student.getName() + "/" + student.getStudentId());
-                } else {
-                    writer.write(student.getName() + "/" + student.getStudentId() + "/" + student.getPassword() + "/");
+                    writer.write(student.getName() + "/" + student.getStudentId() + "/" + student.getBirth());
+                }else {
+                    writer.write(student.getName() + "/" + student.getStudentId() + "/" 
+                    +student.getBirth() +"/"+student.getPassword() + "/");
                     for (int j = 0; j < c.size(); j++) {
                         if (j == c.size() - 1) {
                             writer.write(c.get(j).getCodecourse() + "/" + c.get(j).grade(student) + "/"); 
@@ -264,11 +281,11 @@ public class databasehandler {
                 Assignment assignment = assignments.get(i);
                 if (i == assignments.size() - 1) {
                     writer.write(assignment.getCourseName().getCodecourse() + "/" +
-                            assignment.getAssignmentName() + "/" + assignment.getDeadline());
+                            assignment.getAssignmentName() + "/" + assignment.getDeadline() + "/" + assignment.getAssignmentinfo());
                     break;
                 }
                 writer.write(assignment.getCourseName().getCodecourse() + "/" +
-                        assignment.getAssignmentName() + "/" + assignment.getDeadline() + "\n");
+                        assignment.getAssignmentName() + "/" + assignment.getDeadline()  +"/"+ assignment.getAssignmentinfo()+ "\n");
             }
         } catch (IOException e) {
             System.out.println(e);

@@ -6,10 +6,22 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.swing.RowFilter.Entry;
+
 import main.*;
 import database.*;
 
@@ -79,7 +91,7 @@ class ClientHandler implements Runnable {
         }
     }
 
-    public int checkPasswordAndUsername(String password, String username) throws Exception {
+    public synchronized int checkPasswordAndUsername(String password, String username) throws Exception {
         for (int i = 0 ; i < students.size() ; i++) {
             if (password.equals(students.get(i).getPassword()) && username.equals(students.get(i).getStudentId())) {
                 return 1; // Successful login
@@ -91,7 +103,7 @@ class ClientHandler implements Runnable {
         }
         return 4;
     }
-    public boolean usernamechecker(String username){
+    public synchronized boolean usernamechecker(String username){
         for(int i = 0 ; i < students.size() ; i ++){
             Student student = students.get(i);
             if (student.getStudentId().equals(username)) {
@@ -100,7 +112,7 @@ class ClientHandler implements Runnable {
         }
         return true; //there is no problem
     }
-    public boolean passwordchecker(String password , String username){
+    public synchronized boolean passwordchecker(String password , String username){
         // Check if password contains the username
         Pattern pattern1 = Pattern.compile(username);
         Matcher matcher1 = pattern1.matcher(password);
@@ -114,7 +126,7 @@ class ClientHandler implements Runnable {
         // Return true if password does not contain username and matches the regex
         return !cond1 && cond2;
     }
-    public Student findStudent(String studentID){
+    public synchronized Student findStudent(String studentID){
         for(int i  = 0 ; i < students.size() ; i++){
             if (studentID.equals(students.get(i).getStudentId())) {
                 return students.get(i);
@@ -122,7 +134,7 @@ class ClientHandler implements Runnable {
         }
         return null;
     }
-    public String returncourse(String studentID , String codecourse){
+    public synchronized String returncourse(String studentID , String codecourse){
         List<Course>studetncourses = findStudent(studentID).getEnrollmentCourses();
         for(int i = 0 ; i < studetncourses.size() ; i++){
             if (studetncourses.get(i).getCodecourse().equals(codecourse)) {
@@ -140,27 +152,38 @@ class ClientHandler implements Runnable {
         }
         return "wrong";
     } 
-    public String givetask(String studentID){
+    public synchronized String givetask(String studentID){
         // taskes needed to be sent to the app
         List<Assignment> s = findStudent(studentID).getAssignments();
         StringBuilder data = new StringBuilder();
         for(int i = 0 ; i < s.size() ; i ++){
             if (!s.get(i).getHasbeendone()) {
-                data.append(s.get(i).getCourseName().getCourseName() +":"+ s.get(i).getAssignmentName() + "/" + s.get(i).getDeadline().toString() + ",");
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime deadline = s.get(i).getDeadline();
+                long secondsLeft = ChronoUnit.SECONDS.between(now, deadline);
+                long daysLeft = secondsLeft / (60 * 60 * 24);
+                secondsLeft = secondsLeft % (60 * 60 * 24);
+                long hoursLeft = secondsLeft / (60 * 60);
+                secondsLeft = secondsLeft % (60 * 60);
+                long minutesLeft = secondsLeft / 60;
+                secondsLeft = secondsLeft % 60;
+                data.append(s.get(i).getCourseName().getCourseName() +":"+ s.get(i).getAssignmentName() + "-"+ daysLeft +"days &"+
+                + hoursLeft +"hours &" +minutesLeft +"minutes &"+secondsLeft+"seconds "+"-"+ 
+                s.get(i).getAssignmentinfo() +",");
 
             }
 
         }
-        String result = data.toString().substring(0 , data.length());
+        String result = data.toString().substring(0 , data.length() - 1);
 
         return result;
 
     }
-    public void completedTask(String studentID ,String nametask){
+    public synchronized void completedTask(String studentID ,String nametask){
         Student s = findStudent(studentID);
         s.removeAssignment(nametask);
     }
-    public String profiledata(String studentID){
+    public synchronized String profiledata(String studentID){
         System.out.println(students);
         Student s = findStudent(studentID);
         StringBuilder data = new StringBuilder();
@@ -181,7 +204,7 @@ class ClientHandler implements Runnable {
         data.append("-" + numunit + "-" + s.findTotalAvg() + "-" + s.getPassword());
         return data.toString();
     }
-    public String updatepassword(String studentID  ,String passeord){
+    public synchronized String updatepassword(String studentID  ,String passeord){
         Student s = findStudent(studentID);
         if (passwordchecker(passeord, studentID)) {
             s.setPassword(passeord);
@@ -190,7 +213,7 @@ class ClientHandler implements Runnable {
             return "password is wrong";
         }
     }
-    public String summary(String studentID){
+    public synchronized String summary(String studentID){
         Student s = findStudent(studentID);
         int homeworkdone = 0;
         int homeworkisnotdone = 0;
@@ -206,7 +229,7 @@ class ClientHandler implements Runnable {
         data.append("summary:" + homeworkdone + "-" + homeworkisnotdone + "-" + exams +"-" + s.bestgrade() + "-" + s.worstgrade());
         return data.toString();
     }
-    public String homeworkdone(String studentID){
+    public synchronized String homeworkdone(String studentID){
         Student s = findStudent(studentID);
         StringBuilder data = new StringBuilder();
         data.append("done:");
@@ -219,7 +242,7 @@ class ClientHandler implements Runnable {
         String result = data.toString().substring(0, data.length() - 1);
         return result;
     }
-    public String homeworknotdone(String studentID){
+    public synchronized String homeworknotdone(String studentID){
         Student s = findStudent(studentID);
         StringBuilder data = new StringBuilder();
         data.append("notdone:");
@@ -231,6 +254,62 @@ class ClientHandler implements Runnable {
         }
         String result = data.toString().substring(0, data.length() - 1);
         return result;
+    }
+    public synchronized String givebirthday(){
+        StringBuilder data = new StringBuilder();
+        for(int i = 0 ; i < students.size() ; i++){
+            String[] today = LocalDate.now().toString().split("-");
+            String[]birth = students.get(i).getBirth().toString().split("-");
+           if (birth[1].equals(today[1]) && birth[2].equals(today[2])) {
+                data.append(students.get(i).getName() + ",");
+                System.out.println(students.get(i).getName());
+           } 
+        }
+        if (data.toString().equals(null)) {
+            return null;
+        }
+        String result = data.toString().substring(0 , data.length() - 1);
+        return result;
+    }
+    public synchronized String giveRanckings(){
+        StringBuilder data = new StringBuilder();
+        Map<String , Double> map = new HashMap<>();
+        for(int i = 0 ; i  < students.size() ; i++){
+            if (students.get(i).getEnrollmentCourses().size() == 0) {
+                continue;
+            }
+            map.put(students.get(i).getName(), students.get(i).findTotalAvg());
+        }
+        map = sortByValueDescending(map);
+        for(java.util.Map.Entry<String, Double> entry : map.entrySet()){
+            data.append(entry.getKey() + ":" + String.format("%.2f", entry.getValue()) + ",");
+        }
+        String result = data.toString();
+        return result.substring(0 , result.length() - 1);
+    }
+    public  <K, V extends Comparable<? super V>> Map<K, V> sortByValueDescending(Map<K, V> map) {
+        // Create a list from the entries of the map
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+
+        // Sort the list using a comparator that compares the values in descending order
+        list.sort(Map.Entry.<K, V>comparingByValue().reversed());
+
+        // Create a new LinkedHashMap to preserve the order
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
+    }
+    public synchronized void delete_account(String studentID) throws Exception{
+        Student s = findStudent(studentID);
+        for(int i = 0 ; i  < s.getEnrollmentCourses().size() ; i++){
+            s.getEnrollmentCourses().get(i).getGrades().remove(s);
+            s.getEnrollmentCourses().get(i).removeStudent(s);
+        }
+        s.getEnrollmentCourses().clear();
+        students.remove(s);
     }
     @Override
     public void run() {
@@ -247,7 +326,9 @@ class ClientHandler implements Runnable {
                             Student s = new Student(data[2]);
                             s.setPassword(data[3]);
                             s.setName(data[4]);
-                            // addin the student to data base
+                            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+                            LocalDate localDate = LocalDate.parse(data[5] +"-" + data[6]+ "-"+ data[7], formatter);
+                            s.setBirth(localDate);
                             students.add(s);
                             System.out.println(students);
                             databasehandler.writeassignemnt(assignments);
@@ -278,13 +359,24 @@ class ClientHandler implements Runnable {
                     case "update_password":
                         output(updatepassword(data[0], data[2]));
                         break;
+                    case "giveBirthdays":
+                        output(givebirthday());
+                        break;
+                    case "giveRankings":
+                        output(giveRanckings());
+                        break;
+                    case "delete_account":
+                        delete_account(data[0]);
+                        break;
+                    case "":
+                        break;
                     case "getSummary":
                         output(summary(data[0]));
-                        Thread.sleep(100);
+                        Thread.sleep(150);
                         order = input();
                     case "getNotDoneAssignments":
                         output(homeworknotdone(data[0]));
-                        Thread.sleep(100);
+                        Thread.sleep(150);
                         order = input();
                     case "getDoneAssignments":
                         output(homeworkdone(data[0]));
