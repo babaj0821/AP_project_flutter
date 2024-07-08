@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'add_work_dialog.dart';
+import 'package:gif_view/gif_view.dart';
 
 class WorkPage extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class WorkPage extends StatefulWidget {
 class _WorkPageState extends State<WorkPage> {
   List<String> works = [];
   List<String> completedWorks = [];
+  bool showGif = false;
 
   @override
   void initState() {
@@ -43,7 +45,15 @@ class _WorkPageState extends State<WorkPage> {
     setState(() {
       String completedWork = works.removeAt(index);
       completedWorks.add(completedWork);
+      showGif = true;
       _saveWorks();
+
+      // Hide the GIF after 3 seconds
+      Future.delayed(Duration(seconds: 2), () {
+        setState(() {
+          showGif = false;
+        });
+      });
     });
   }
 
@@ -70,67 +80,90 @@ class _WorkPageState extends State<WorkPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Work Manager'),
-      // ),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  'To Do Works',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'To Do Works:',
+                      style: TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Image.asset(
+                      'assets/images/sad.jpg', // Replace with your image asset path
+                      height: 90.0, // Increase the image size
+                      width: 90.0,  // Increase the image size
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: works.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(works[index]),
-                  trailing: IconButton(
-                    icon: Icon(Icons.check),
-                    onPressed: () => _completeWork(index),
-                  ),
-                );
-              },
-            ),
-          ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Completed Works',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: works.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(works[index]),
+                      trailing: IconButton(
+                        icon: Icon(Icons.check),
+                        onPressed: () => _completeWork(index),
+                      ),
+                    );
+                  },
                 ),
-                IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: _clearCompletedWorks,
+              ),
+              Divider(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'Completed Works',
+                          style: TextStyle(color: Colors.green, fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: _clearCompletedWorks,
+                        ),
+                      ],
+                    ),
+                    Image.asset(
+                      'assets/images/happy.jpg', // Replace with your image asset path
+                      height: 90.0, // Increase the image size
+                      width: 90.0,  // Increase the image size
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: completedWorks.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(
+                        completedWorks[index],
+                        style: TextStyle(decoration: TextDecoration.lineThrough),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: completedWorks.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(
-                    completedWorks[index],
-                    style: TextStyle(decoration: TextDecoration.lineThrough),
-                  ),
-                );
-              },
+          if (showGif)
+            Center(
+              child: GifView.asset(
+                'assets/images/jessee.gif',
+                height: 400.0,
+                width: 400.0,
+              ),
             ),
-          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(

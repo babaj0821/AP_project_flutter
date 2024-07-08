@@ -186,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SizedBox(height: 20),
               CircleAvatar(
                 radius: 50,
-                backgroundImage: AssetImage('assets/images/img.png'), // Add your image asset here
+                backgroundImage: AssetImage('assets/images/prof.png'), // Add your image asset here
               ),
               SizedBox(height: 10),
               Text(
@@ -216,14 +216,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onPressed: () {
                   _updatePassword(_passwordController.text);
                 },
-                child: Text('Update Password'),
+                child: Text('Update Password',style: TextStyle(
+                  color: Colors.black, // Set the desired color
+                ),),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green[300], // Red background for delete button
+                ),
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _deleteAccount,
-                child: Text('Delete Account'),
+                child: Text('Delete Account',style: TextStyle(
+                  color: Colors.black, // Set the desired color
+                ),),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red, // Red background for delete button
+                  backgroundColor: Colors.red[300], // Red background for delete button
                 ),
               ),
             ],

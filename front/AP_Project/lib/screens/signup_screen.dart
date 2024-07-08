@@ -22,6 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _birthDateController = TextEditingController();
   bool agreePersonalData = true;
+  bool _passwordVisible = false;
 
   Future<void> _sendDataToServer(String id, String password, String name, String birthDate) async {
     try {
@@ -175,7 +176,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       TextFormField(
                         controller: _passwordController,
-                        obscureText: true,
+                        obscureText: !_passwordVisible,
                         obscuringCharacter: '*',
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -200,6 +201,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _passwordVisible = !_passwordVisible;
+                              });
+                            },
                           ),
                         ),
                       ),

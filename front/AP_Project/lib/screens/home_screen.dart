@@ -33,11 +33,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _logout() {
-    // Navigate to the login page and remove all the routes behind
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => SignInScreen()),
-          (Route<dynamic> route) => false,
+      MaterialPageRoute(builder: (context) => SignInScreen()),//new route
+          (Route<dynamic> route) => false,//remove all previous routs
     );
   }
 
@@ -45,10 +44,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     print('Building HomeScreen');
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(backgroundColor: Colors.cyan[500],
+        automaticallyImplyLeading: false,//removing back button
         title: Text(
-          "$globalUsername",
-          style: TextStyle(fontSize: 18),
+          "دانشجویار",
+          style: TextStyle(fontSize: 25, color: Colors.brown),
         ),
         centerTitle: true,
         actions: [
@@ -61,12 +61,12 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'سرا'),
-          BottomNavigationBarItem(icon: Icon(Icons.work), label: 'تسک ها'),
-          BottomNavigationBarItem(icon: Icon(Icons.school), label: 'کلاسا'),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'خبرها'),
-          BottomNavigationBarItem(icon: Icon(Icons.work), label: 'کارا'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'پروفایل'),
+          BottomNavigationBarItem(icon: Icon(Icons.home,color: Colors.cyan[800],), label: 'سرا',),
+          BottomNavigationBarItem(icon: Icon(Icons.work,color: Colors.cyan[800]), label: 'تسک ها'),
+          BottomNavigationBarItem(icon: Icon(Icons.school,color: Colors.cyan[800]), label: 'کلاسا'),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications,color: Colors.cyan[800]), label: 'خبرها'),
+          BottomNavigationBarItem(icon: Icon(Icons.work,color: Colors.cyan[800]), label: 'کارا'),
+          BottomNavigationBarItem(icon: Icon(Icons.person,color: Colors.cyan[800]), label: 'پروفایل'),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.pink,
@@ -88,6 +88,7 @@ class _HomePageState extends State<HomePage> {
   String _summaryData = "";
   String _notDoneAssignments = "";
   String _doneAssignments = "";
+  String _daysLeft = "";
 
   @override
   void initState() {
@@ -103,13 +104,13 @@ class _HomePageState extends State<HomePage> {
       // Request summary data
       socket.write('$globalUsername-getSummary\u0000');
       await socket.flush();
-
       // Request not done assignments data
       socket.write('$globalUsername-getNotDoneAssignments\u0000');
       await socket.flush();
-
       // Request done assignments data
       socket.write('$globalUsername-getDoneAssignments\u0000');
+      await socket.flush();
+      socket.write('$globalUsername-getDaysLeft\u0000');
       await socket.flush();
 
       // Listen for responses
@@ -126,6 +127,10 @@ class _HomePageState extends State<HomePage> {
         } else if (response.startsWith('done:')) {
           setState(() {
             _doneAssignments = response.substring(5);
+          });
+        }else if (response.startsWith('daysLeft:')) {
+          setState(() {
+            _daysLeft = response.substring(9);
           });
         }
       });
@@ -146,6 +151,8 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             _buildSummarySection(),
+            SizedBox(height: 16.0),  // Reduced to 16.0 to make space for the days left row
+            _buildDaysLeftRow(),    // Added the new row here
             SizedBox(height: 32.0),
             _buildNotDoneAssignmentsSection(),
             SizedBox(height: 32.0),
@@ -176,6 +183,35 @@ class _HomePageState extends State<HomePage> {
             Expanded(child: _buildSummaryCard("Best Grade", data[3], Icons.trending_up)),
             Expanded(child: _buildSummaryCard("Worst Grade", data[4], Icons.trending_down)),
           ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDaysLeftRow() {
+    final times = _daysLeft.split('-');
+    if (times.length != 2) {
+      return Text("Invalid days left data");
+    }
+    return Row(
+      children: [
+        Expanded(
+          child: Text("soonest: "+
+            times[0],
+            style: TextStyle(color: Colors.red, fontSize: 16.0),
+            textAlign: TextAlign.left,
+          ),
+        ),
+        Text(
+          '|',
+          style: TextStyle(color: Colors.black, fontSize: 16.0),
+        ),
+        Expanded(
+          child: Text("latest: "+
+            times[1],
+            style: TextStyle(color: Colors.green, fontSize: 16.0),
+            textAlign: TextAlign.right,
+          ),
         ),
       ],
     );

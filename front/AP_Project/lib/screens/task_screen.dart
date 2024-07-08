@@ -62,29 +62,13 @@ class _TasksPageState extends State<TasksPage> {
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
       socket.write('$globalUsername-completedTask-$taskTitle\u0000');
       await socket.flush(); // Ensure data is sent
-      print('Completed task sent to server: completed-$taskTitle\u0000');
+      print('Completed task sent to server: $globalUsername-completedTask-$taskTitle\u0000');
       await socket.close();
     } catch (e) {
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
-    }
-  }
-
-  void _addTask() {
-    if (_taskController.text.isNotEmpty && _timeController.text.isNotEmpty && _descriptionController.text.isNotEmpty) {
-      setState(() {
-        _tasks.add({
-          "title": _taskController.text,
-          "time": _timeController.text,
-          "description": _descriptionController.text,
-        });
-        _taskController.clear();
-        _timeController.clear();
-        _descriptionController.clear();
-      });
-      Navigator.of(context).pop();
     }
   }
 
@@ -106,8 +90,10 @@ class _TasksPageState extends State<TasksPage> {
               child: Text("Yes"),
               onPressed: () {
                 setState(() {
+                  print('Task before removing: ${_tasks[index]["title"]}');
                   _sendCompletedTaskToServer(_tasks[index]["title"]!);
                   _tasks.removeAt(index);
+                  print('Task removed: ${_tasks}');
                 });
                 Navigator.of(context).pop();
               },
@@ -139,45 +125,11 @@ class _TasksPageState extends State<TasksPage> {
                 Navigator.of(context).pop();
               },
             ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showAddTaskDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Add New Task"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _taskController,
-                decoration: InputDecoration(hintText: "Enter Task Title"),
-              ),
-              TextField(
-                controller: _timeController,
-                decoration: InputDecoration(hintText: "Enter Task Time"),
-              ),
-              TextField(
-                controller: _descriptionController,
-                decoration: InputDecoration(hintText: "Enter Task Description"),
-              ),
-            ],
-          ),
-          actions: [
             TextButton(
-              child: Text("Cancel"),
+              child: Text("Mark as Completed"),
               onPressed: () {
-                Navigator.of(context).pop();
+                _markTaskAsCompleted(index);
               },
-            ),
-            TextButton(
-              child: Text("Add"),
-              onPressed: _addTask,
             ),
           ],
         );
@@ -207,10 +159,6 @@ class _TasksPageState extends State<TasksPage> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddTaskDialog,
-        child: Icon(Icons.add),
       ),
     );
   }

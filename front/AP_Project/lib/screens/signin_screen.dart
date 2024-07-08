@@ -20,6 +20,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _studentIdController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool rememberPassword = true;
+  bool _passwordVisible = false; // Add this boolean variable
 
   @override
   void dispose() {
@@ -151,7 +152,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       TextFormField(
                         controller: _passwordController,
-                        obscureText: true,
+                        obscureText: !_passwordVisible, // Use the state variable here
                         obscuringCharacter: '*',
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -176,6 +177,18 @@ class _SignInScreenState extends State<SignInScreen> {
                               color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _passwordVisible = !_passwordVisible;
+                              });
+                            },
                           ),
                         ),
                       ),

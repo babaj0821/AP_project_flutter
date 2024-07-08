@@ -2,7 +2,6 @@ import 'package:ap_project/screens/home_screen.dart';
 import 'package:ap_project/screens/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ap_project/screens/welcome_screen.dart';
-import 'package:ap_project/theme/theme.dart';
 import 'package:ap_project/screens/user_profile_page.dart';
 void main() {
 
@@ -16,6 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData.light().copyWith(
         primaryColor: Colors.lightBlue,

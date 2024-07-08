@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:ap_project/student.dart';
-import 'package:ap_project/screens/signin_screen.dart';
 class CoursePage extends StatefulWidget {
   @override
   _CoursePageState createState() => _CoursePageState();
