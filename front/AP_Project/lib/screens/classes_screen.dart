@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:ap_project/student.dart';
-import 'package:ap_project/screens/signin_screen.dart';
 class CoursePage extends StatefulWidget {
   @override
   _CoursePageState createState() => _CoursePageState();
@@ -90,9 +89,9 @@ class _CoursePageState extends State<CoursePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('کلاس‌ها'),
-      ),
+      // appBar: AppBar(
+      //   title: Text('کلاس‌ها'),
+      // ),
       body: ListView.builder(
         itemCount: courses.length,
         itemBuilder: (context, index) {

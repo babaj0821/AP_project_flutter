@@ -9,9 +9,9 @@ class TasksPage extends StatefulWidget {
 
 class _TasksPageState extends State<TasksPage> {
   final List<Map<String, String>> _tasks = [];
-  final List<String> _completedTasks = [];
   final TextEditingController _taskController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   @override
   void initState() {
@@ -25,21 +25,25 @@ class _TasksPageState extends State<TasksPage> {
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
       socket.write('$globalUsername-giveTask\u0000');
       await socket.flush();
-      print('Data sent to server:402243039-giveTask\u0000');
+      print('Data sent to server: $globalUsername-giveTask\u0000');
 
       // Listen for responses from the server
       socket.listen((data) {
         final response = String.fromCharCodes(data).trim();
         print('Response from server: $response');
 
-        // Assuming server sends tasks in format: "task1-time1,task2-time2,..."
+        // Assuming server sends tasks in format: "task1-time1-description1,task2-time2-description2,..."
         final tasks = response.split(',');
         setState(() {
           _tasks.clear();
           for (var task in tasks) {
-            final taskDetails = task.split('/');
-            if (taskDetails.length == 2) {
-              _tasks.add({"title": taskDetails[0], "time": taskDetails[1]});
+            final taskDetails = task.split('-');
+            if (taskDetails.length == 3) {
+              _tasks.add({
+                "title": taskDetails[0],
+                "time": taskDetails[1],
+                "description": taskDetails[2],
+              });
             }
           }
         });
@@ -58,7 +62,7 @@ class _TasksPageState extends State<TasksPage> {
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
       socket.write('$globalUsername-completedTask-$taskTitle\u0000');
       await socket.flush(); // Ensure data is sent
-      print('Completed task sent to server: completed-$taskTitle\u0000');
+      print('Completed task sent to server: $globalUsername-completedTask-$taskTitle\u0000');
       await socket.close();
     } catch (e) {
       print('Error: $e');
@@ -68,44 +72,13 @@ class _TasksPageState extends State<TasksPage> {
     }
   }
 
-  void _addTask() {
-    if (_taskController.text.isNotEmpty && _timeController.text.isNotEmpty) {
-      setState(() {
-        _tasks.add({"title": _taskController.text, "time": _timeController.text});
-        _taskController.clear();
-        _timeController.clear();
-      });
-      Navigator.of(context).pop();
-    }
-  }
-
   void _markTaskAsCompleted(int index) {
-    setState(() {
-      _completedTasks.add(_tasks[index]["title"]!);
-      _sendCompletedTaskToServer(_tasks[index]["title"]!);
-      _tasks.removeAt(index);
-    });
-  }
-
-  void _showAddTaskDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Add New Task"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _taskController,
-                decoration: InputDecoration(hintText: "Enter Task Title"),
-              ),
-              TextField(
-                controller: _timeController,
-                decoration: InputDecoration(hintText: "Enter Task Time"),
-              ),
-            ],
-          ),
+          title: Text("Warning"),
+          content: Text("Are you sure you want to delete this task?"),
           actions: [
             TextButton(
               child: Text("Cancel"),
@@ -114,8 +87,49 @@ class _TasksPageState extends State<TasksPage> {
               },
             ),
             TextButton(
-              child: Text("Add"),
-              onPressed: _addTask,
+              child: Text("Yes"),
+              onPressed: () {
+                setState(() {
+                  print('Task before removing: ${_tasks[index]["title"]}');
+                  _sendCompletedTaskToServer(_tasks[index]["title"]!);
+                  _tasks.removeAt(index);
+                  print('Task removed: ${_tasks}');
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showTaskDetails(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(_tasks[index]["title"]!),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Time: ${_tasks[index]["time"]!}", style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(height: 10),
+              Text("Description: ${_tasks[index]["description"]!}"),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Mark as Completed"),
+              onPressed: () {
+                _markTaskAsCompleted(index);
+              },
             ),
           ],
         );
@@ -126,13 +140,6 @@ class _TasksPageState extends State<TasksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Tasks",
-          style: TextStyle(fontSize: 18),
-        ),
-        centerTitle: true,
-      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -144,39 +151,14 @@ class _TasksPageState extends State<TasksPage> {
               itemBuilder: (context, index) {
                 return Card(
                   child: ListTile(
-                    leading: IconButton(
-                      icon: Icon(Icons.check_circle, color: Colors.green),
-                      onPressed: () => _markTaskAsCompleted(index),
-                    ),
                     title: Text(_tasks[index]["title"]!),
-                    subtitle: Text(_tasks[index]["time"]!),
-                  ),
-                );
-              },
-            ),
-            SizedBox(height: 32.0),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Text("Completed Tasks", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: _completedTasks.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    title: Text(_completedTasks[index]),
+                    onTap: () => _showTaskDetails(index),
                   ),
                 );
               },
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddTaskDialog,
-        child: Icon(Icons.add),
       ),
     );
   }

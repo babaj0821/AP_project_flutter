@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:ap_project/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ap_project/screens/signin_screen.dart';
 import 'package:ap_project/screens/user_profile_page.dart';
@@ -18,19 +19,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formSignupKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _birthDateController = TextEditingController();
   bool agreePersonalData = true;
+  bool _passwordVisible = false;
 
-  Future<void> _sendDataToServer(String username, String password) async {
+  Future<void> _sendDataToServer(String id, String password, String name, String birthDate) async {
     try {
       // Replace with your server's IP address and port
       final socket = await Socket.connect('192.168.43.66', 8888);
 
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
 
-      // Send username and password to the server
-      socket.write('$globalUsername-sign-$username-$password\u0000');
+      socket.write('$globalUsername-sign-$id-$password-$name-$birthDate\u0000');
       await socket.flush(); // Ensure data is sent
-      print('Data sent to server: sign-$username-$password\u0000');
+      print('Data sent to server: sign-$id-$password-$name-$birthDate\u0000');
 
       // Listen for responses from the server
       socket.listen((data) {
@@ -38,10 +41,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         print('Response from server: $response'); // Print the response for debugging
 
         if (response == '1') {
+          globalUsername = id;
           // Navigate to the homepage on successful signup
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => ProfileScreen()),
+            MaterialPageRoute(builder: (context) => HomeScreen()),
           );
         } else {
           // Show error message if signup failed
@@ -109,6 +113,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 40.0,
                       ),
                       TextFormField(
+                        controller: _nameController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'لطفا نام خود را وارد کنید';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          label: const Text('نام'),
+                          hintText: 'نام',
+                          hintStyle: const TextStyle(
+                            color: Colors.black26,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+                      TextFormField(
                         controller: _usernameController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -141,7 +176,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       TextFormField(
                         controller: _passwordController,
-                        obscureText: true,
+                        obscureText: !_passwordVisible,
                         obscuringCharacter: '*',
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -152,6 +187,52 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         decoration: InputDecoration(
                           label: const Text('رمز عبور'),
                           hintText: 'رمز عبور',
+                          hintStyle: const TextStyle(
+                            color: Colors.black26,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _passwordVisible = !_passwordVisible;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 25.0,
+                      ),
+                      TextFormField(
+                        controller: _birthDateController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'لطفا تاریخ تولد خود را وارد کنید';
+                          }
+                          // Regular expression to check if the date is in the format YYYY-MM-DD
+                          final regex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
+                          if (!regex.hasMatch(value)) {
+                            return 'تاریخ باید به صورت YYYY-MM-DD ';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          label: const Text('تاریخ تولد'),
+                          hintText: 'YYYY-MM-DD',
                           hintStyle: const TextStyle(
                             color: Colors.black26,
                           ),
@@ -212,6 +293,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               _sendDataToServer(
                                 _usernameController.text,
                                 _passwordController.text,
+                                _nameController.text,
+                                _birthDateController.text,
                               );
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ap_project/student.dart';
 import 'dart:io';
 
+import 'signup_screen.dart';
+
 class ProfileScreen extends StatefulWidget {
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -121,12 +123,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> _deleteAccount() async {
+    bool? confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Account'),
+          content: Text('Are you sure you want to delete your account? This action cannot be undone.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text('Delete'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm == true) {
+      try {
+        final socket = await Socket.connect('192.168.43.66', 8888);
+        print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
+        socket.write('$globalUsername-delete_account\u0000');
+        await socket.flush();
+        print('Delete account request sent to server');
+
+        // Close the socket after sending the request
+        socket.destroy();
+
+        // Navigate to signup page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SignUpScreen()),
+        );
+      } catch (e) {
+        print('Error: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-      ),
+      // appBar: AppBar(
+      //   title: Text('Profile'),
+      // ),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -134,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SizedBox(height: 20),
               CircleAvatar(
                 radius: 50,
-                backgroundImage: AssetImage('assets/images/img.png'), // Add your image asset here
+                backgroundImage: AssetImage('assets/images/prof.png'), // Add your image asset here
               ),
               SizedBox(height: 10),
               Text(
@@ -164,7 +216,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onPressed: () {
                   _updatePassword(_passwordController.text);
                 },
-                child: Text('Update Password'),
+                child: Text('Update Password',style: TextStyle(
+                  color: Colors.black, // Set the desired color
+                ),),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green[300], // Red background for delete button
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _deleteAccount,
+                child: Text('Delete Account',style: TextStyle(
+                  color: Colors.black, // Set the desired color
+                ),),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red[300], // Red background for delete button
+                ),
               ),
             ],
           ),

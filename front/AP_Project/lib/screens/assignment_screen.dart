@@ -1,122 +1,173 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'add_work_dialog.dart';
+import 'package:gif_view/gif_view.dart';
+
 class WorkPage extends StatefulWidget {
   @override
   _WorkPageState createState() => _WorkPageState();
 }
 
 class _WorkPageState extends State<WorkPage> {
-  final List<Map<String, String>> _tasks = [
-    {"title": "آز ریز - تمرین 1", "time": "09:00 صبح"},
-    {"title": "تمرین الگوریتم", "time": "10:00 صبح"},
-    {"title": "انتخاب واحد", "time": "11:00 صبح"},
-    {"title": "تکمیل آز OS", "time": "12:00 ظهر"},
-  ];
+  List<String> works = [];
+  List<String> completedWorks = [];
+  bool showGif = false;
 
-  final List<String> _completedTasks = [
-    "تکمیل آز ریز - تمرین 0",
-    "بررسی فایل‌ها تمرین"
-  ];
-
-  final TextEditingController _taskController = TextEditingController();
-  final TextEditingController _timeController = TextEditingController();
-
-  void _addTask() {
-    if (_taskController.text.isNotEmpty && _timeController.text.isNotEmpty) {
-      setState(() {
-        _tasks.add({"title": _taskController.text, "time": _timeController.text});
-        _taskController.clear();
-        _timeController.clear();
-      });
-      Navigator.of(context).pop();
-    }
+  @override
+  void initState() {
+    super.initState();
+    _loadWorks();
   }
 
-  void _showAddTaskDialog() {
-    showDialog(
+  _loadWorks() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      works = (prefs.getStringList('works') ?? []);
+      completedWorks = (prefs.getStringList('completedWorks') ?? []);
+    });
+  }
+
+  _saveWorks() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('works', works);
+    await prefs.setStringList('completedWorks', completedWorks);
+  }
+
+  void _addWork(String work) {
+    setState(() {
+      works.add(work);
+      _saveWorks();
+    });
+  }
+
+  void _completeWork(int index) {
+    setState(() {
+      String completedWork = works.removeAt(index);
+      completedWorks.add(completedWork);
+      showGif = true;
+      _saveWorks();
+
+      // Hide the GIF after 3 seconds
+      Future.delayed(Duration(seconds: 2), () {
+        setState(() {
+          showGif = false;
+        });
+      });
+    });
+  }
+
+  void _clearCompletedWorks() {
+    setState(() {
+      completedWorks.clear();
+      _saveWorks();
+    });
+  }
+
+  void _openAddWorkDialog() async {
+    final result = await showDialog<Map<String, dynamic>>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Add New Task"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _taskController,
-                decoration: InputDecoration(hintText: "Enter Task Title"),
-              ),
-              TextField(
-                controller: _timeController,
-                decoration: InputDecoration(hintText: "Enter Task Time"),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text("Add"),
-              onPressed: _addTask,
-            ),
-          ],
-        );
+        return AddWorkDialog();
       },
     );
+
+    if (result != null && result.containsKey('work') && result.containsKey('dueTime')) {
+      _addWork("${result['work']} (Due: ${result['dueTime']})");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "کارها",
-          style: TextStyle(fontSize: 18),
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: _tasks.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    leading: Icon(Icons.check_circle, color: Colors.green),
-                    title: Text(_tasks[index]["title"]!),
-                    subtitle: Text(_tasks[index]["time"]!),
-                  ),
-                );
-              },
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'To Do Works:',
+                      style: TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Image.asset(
+                      'assets/images/sad.jpg', // Replace with your image asset path
+                      height: 90.0, // Increase the image size
+                      width: 90.0,  // Increase the image size
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: works.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(works[index]),
+                      trailing: IconButton(
+                        icon: Icon(Icons.check),
+                        onPressed: () => _completeWork(index),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Divider(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'Completed Works',
+                          style: TextStyle(color: Colors.green, fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: _clearCompletedWorks,
+                        ),
+                      ],
+                    ),
+                    Image.asset(
+                      'assets/images/happy.jpg', // Replace with your image asset path
+                      height: 90.0, // Increase the image size
+                      width: 90.0,  // Increase the image size
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: completedWorks.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(
+                        completedWorks[index],
+                        style: TextStyle(decoration: TextDecoration.lineThrough),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          if (showGif)
+            Center(
+              child: GifView.asset(
+                'assets/images/jessee.gif',
+                height: 400.0,
+                width: 400.0,
+              ),
             ),
-            SizedBox(height: 32.0),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Text("کارهای انجام شده", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: _completedTasks.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    title: Text(_completedTasks[index]),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showAddTaskDialog,
+        onPressed: _openAddWorkDialog,
         child: Icon(Icons.add),
       ),
     );

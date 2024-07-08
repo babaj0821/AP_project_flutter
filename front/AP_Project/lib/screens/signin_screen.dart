@@ -20,6 +20,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _studentIdController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool rememberPassword = true;
+  bool _passwordVisible = false; // Add this boolean variable
 
   @override
   void dispose() {
@@ -54,14 +55,14 @@ class _SignInScreenState extends State<SignInScreen> {
           } else {
             // Show error message if sign-in failed
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(response)),
+              SnackBar(content: Text('wrong username or password')),
             );
           }
         },
         onError: (error) {
           print('Error: $error');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: $error')),
+            SnackBar(content: Text('wrong username or password')),
           );
           socket.destroy();
         },
@@ -74,7 +75,7 @@ class _SignInScreenState extends State<SignInScreen> {
     } catch (e) {
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
+        SnackBar(content: Text('wrong username or password')),
       );
     }
   }
@@ -151,7 +152,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       TextFormField(
                         controller: _passwordController,
-                        obscureText: true,
+                        obscureText: !_passwordVisible, // Use the state variable here
                         obscuringCharacter: '*',
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -176,6 +177,18 @@ class _SignInScreenState extends State<SignInScreen> {
                               color: Colors.black12,
                             ),
                             borderRadius: BorderRadius.circular(10),
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _passwordVisible = !_passwordVisible;
+                              });
+                            },
                           ),
                         ),
                       ),
