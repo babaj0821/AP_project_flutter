@@ -141,11 +141,12 @@ public class databasehandler {
         }
         return null;
     }
-    public static Assignment findAssignment(String codecorse , String name){
+    public static Assignment findAssignment(String codecorse , String name) throws Exception{
         for(int i = 0 ; i < assignments.size() ; i++){
             if (assignments.get(i).getAssignmentName().equals(name) && 
             assignments.get(i).getCourseName().getCodecourse().equals(codecorse)) {
-                return assignments.get(i);
+                return new Assignment(assignments.get(i).getCourseName(), assignments.get(i).getAssignmentName(), assignments.get(i).getDeadline()
+                , assignments.get(i).getAssignmentinfo());
             }
         }
         return null;
@@ -189,6 +190,7 @@ public class databasehandler {
                 String[] course = data.split("/");
                 Teacher teacher = Admin.findtaecherObj(course[1]);
                 Course c = new Course(course[0], teacher, Integer.parseInt(course[2]), course[3], course[4]);
+                c.setDayhour(course[5]);
                 teacher.addCourse(c);
                 courses.add(c);
             }
@@ -300,12 +302,13 @@ public class databasehandler {
                 if (i == courses.size() - 1) {
                     writer.write(course.getCourseName() + "/" + course.getTeacher().getTeacherID() + "/"
                             + course.getNumberOfUnits() + "/" +
-                            course.getExaminationDate() + "/" + course.getCodecourse());
+                            course.getExaminationDate() + "/" + course.getCodecourse() +
+                            "/" + course.getDayhour());
                     break;
                 }
                 writer.write(course.getCourseName() + "/" + course.getTeacher().getTeacherID() + "/"
                         + course.getNumberOfUnits() + "/" +
-                        course.getExaminationDate() + "/" + course.getCodecourse() + "\n");
+                        course.getExaminationDate() + "/" + course.getCodecourse() +"/"+course.getDayhour()+ "\n");
             }
         } catch (IOException e) {
             System.out.println(e);

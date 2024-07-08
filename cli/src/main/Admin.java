@@ -265,7 +265,7 @@ public class Admin {
     }
 
     public void newCourse(String courseName, String teacherId,
-            int numberOfUnits, String examinationDate, String codecourse) throws Exception {
+            int numberOfUnits, String examinationDate, String codecourse ,String dayhour) throws Exception {
 
         Teacher teacher = findtaecherObj(teacherId);
 
@@ -277,6 +277,7 @@ public class Admin {
         } else if (numberOfUnits > 0 && teacher == null) {
             Course c = new Course(courseName, null, numberOfUnits, examinationDate, codecourse);
             courses.add(c);
+            c.setDayhour(dayhour);
             System.out.println("this course dosent have any teacher add one to be shown to students");
         } else if (numberOfUnits <= 0) {
             throw new Exception("the course unit must be above 0");

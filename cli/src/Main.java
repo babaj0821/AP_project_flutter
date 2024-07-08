@@ -146,10 +146,12 @@ public class Main {
                             String examinationDate = input.next();
                             System.out.println("enter codeofcourse:");
                             codeofcourse = input.next();
+                            System.out.println("enter the day and the hour of class:");
+                            String dayhour = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try {
-                                admin.newCourse(name_course, teacherId, unit, examinationDate, codeofcourse);
+                                admin.newCourse(name_course, teacherId, unit, examinationDate, codeofcourse , dayhour);
                             } catch (Exception e) {
                                 System.out.println(e);
                                 databasehandler.writedata();

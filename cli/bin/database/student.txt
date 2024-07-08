@@ -1,6 +1,6 @@
-imanbabjani/402243039/2019-02-02/13751383/5/15.5/3/16.5/2/14.0/
-3/tamrin1/false/3/tamrin10/false/3/tamrin3/false/
-mahdikarimi/402243091/2019-02-02/13831375/5/19.5/3/19.5/2/18.0/
-
-zhinafathi/402243127/2004-07-06/Iman1234/5/15.5/3/19.5/2/18.0/
-5/tamrin1phy/false/5/tamrin2phy/false/3/tamrin1/false/3/tamrin10/false/2/tamrin1/true/2/tamrin8/true/2/tamrin6/true/5/tamrin3phy/true/
+imanbabjani/402243039/2019-07-08/Alibaba1234/5/15.5/3/16.5/2/14.0/
+5/tamrin1phy/false/5/tamrin2phy/false/5/tamrin3phy/false/2/tamrin1ap/false/2/tamrin8ap/false/2/tamrin6ap/false/3/tamrin10madar/false/
+mahdikarimi/402243091/2019-07-08/Karim1234/5/19.5/3/19.5/2/18.0/
+5/tamrin1phy/false/5/tamrin2phy/false/5/tamrin3phy/false/2/tamrin1ap/true/2/tamrin8ap/true/2/tamrin6ap/true/3/tamrin10madar/true/
+zhinafathi/402243127/2004-07-08/Iman1234/5/15.5/3/19.5/2/18.0/
+5/tamrin1phy/true/5/tamrin2phy/true/5/tamrin3phy/true/2/tamrin1ap/true/2/tamrin8ap/true/2/tamrin6ap/true/3/tamrin10madar/false/

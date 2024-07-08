@@ -93,6 +93,8 @@ class ClientHandler implements Runnable {
 
     public synchronized int checkPasswordAndUsername(String password, String username) throws Exception {
         for (int i = 0 ; i < students.size() ; i++) {
+            System.out.println(students.get(i).getPassword());
+            System.out.println(students.get(i).getStudentId());
             if (password.equals(students.get(i).getPassword()) && username.equals(students.get(i).getStudentId())) {
                 return 1; // Successful login
             } else if (password.equals(students.get(i).getPassword())) {
@@ -311,6 +313,38 @@ class ClientHandler implements Runnable {
         s.getEnrollmentCourses().clear();
         students.remove(s);
     }
+    public synchronized String daysleft(String studentID){
+        List<Assignment> s = findStudent(studentID).getAssignments();
+        StringBuilder data = new StringBuilder();
+        Map<String , List<Long>> map = new LinkedHashMap<>();
+        for(int i = 0 ; i < s.size() ; i ++){
+            if (!s.get(i).getHasbeendone()) {
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime deadline = s.get(i).getDeadline();
+                long secondsLeft = ChronoUnit.SECONDS.between(now, deadline);
+                long daysLeft = secondsLeft / (60 * 60 * 24);
+                map.computeIfAbsent(s.get(i).getCourseName().getCourseName(), k -> new ArrayList<>()).add(daysLeft);
+            }
+        }
+        long minValue = Long.MAX_VALUE;
+        long maxValue = Long.MIN_VALUE;
+        String minKey = null;
+        String maxKey = null;
+
+        for (Map.Entry<String, List<Long>> entry : map.entrySet()) {
+            for (Long value : entry.getValue()) {
+                if (value < minValue) {
+                    minValue = value;
+                    minKey = entry.getKey();
+                }
+                if (value > maxValue) {
+                    maxValue = value;
+                    maxKey = entry.getKey();
+                }
+            }
+        }
+        return data.append("daysLeft:" + minKey + ":" + minValue+" daysleft " +"-" + maxKey + ":" + maxValue +" daysleft ").toString();
+    }
     @Override
     public void run() {
         String order = "";
@@ -380,7 +414,10 @@ class ClientHandler implements Runnable {
                         order = input();
                     case "getDoneAssignments":
                         output(homeworkdone(data[0]));
-                        break;
+                        Thread.sleep(150);
+                        order = input();
+                    case "getDaysLeft":
+                        output(daysleft(data[0]));
                     default:
                         break;
                 }

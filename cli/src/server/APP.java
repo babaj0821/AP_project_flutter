@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.Socket;
 import java.nio.Buffer;
 import java.util.Scanner;
@@ -13,52 +14,49 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class APP {
-    public static String input(DataInputStream input) {
-        StringBuilder order = new StringBuilder();
-        try {
-            int character;
-            while ((character = input.read()) != -1) {
-                if (character == '\u0000') {
-                    break;
-                }
-                order.append((char) character);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Received: " + order);
-        return order.toString();
-    }
-    public static void output(DataOutputStream output , String code) {
-        try {
-            System.out.println(code);
-            output.writeBytes(code); // Then send the actual message
-            output.flush();
-            System.out.println("Response sent");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    public static boolean passwordchecker(String password, String username) {
-        // Check if password contains the username
-        Pattern pattern1 = Pattern.compile(username);
-        Matcher matcher1 = pattern1.matcher(password);
-        boolean cond1 = matcher1.find();
-    
-        // Check if password matches the regex for uppercase, lowercase, and minimum length
-        Pattern pattern2 = Pattern.compile("^(?=.*[A-Z])(?=.*[a-z]).{8,}$");
-        Matcher matcher2 = pattern2.matcher(password);
-        boolean cond2 = matcher2.find();
-    
-        // Return true if password does not contain username and matches the regex
-        return !cond1 && cond2;
-    }
-    
     public static void main(String[] args) throws Exception{
-        Scanner s = new Scanner(System.in);
-        String i = s.nextLine();
-        System.out.println(passwordchecker(i, "iman"));
-
-
+        Socket s = new Socket("localhost" , 8888);
+        client d= new client(s);
+        d.start();
     }
 }
+
+class client extends Thread{
+    private BufferedWriter write;
+    private BufferedReader read;
+    private Socket s;
+    client(Socket s){
+        this.s = s;
+        try {
+            write = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+            read = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    @Override
+    public void run(){
+        Scanner in  = new Scanner(System.in);
+        String order = "";
+        while (!order.equals("exit")) {
+            order = "402243127-login-402243127-Iman1234";
+                try {
+                    write.write(order);
+                    write.newLine();
+                    write.flush();
+                    System.out.println(read.readLine());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                System.out.println(read.readLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+        }
+
+
+    }

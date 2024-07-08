@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import server.server;
+
 public class Course {
     private String courseName;
     private String codecourse;
@@ -18,6 +20,7 @@ public class Course {
     private boolean hasActiveProjects;
     private int numberOfRegisteredStudents;
     private Map<Student, Double> grades;
+    private String dayhour;
 
     public Course(String courseName, Teacher teacher, int numberOfUnits, String examinationDate, String codecourse) {
         this.courseName = courseName;
@@ -39,6 +42,12 @@ public class Course {
 
     public Teacher getTeacher() {
         return teacher;
+    }
+    public String getDayhour() {
+        return dayhour;
+    }
+    public void setDayhour(String dayhour) {
+        this.dayhour = dayhour;
     }
 
     public List<Student> getStudents() {
