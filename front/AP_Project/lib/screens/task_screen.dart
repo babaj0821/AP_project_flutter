@@ -26,8 +26,6 @@ class _TasksPageState extends State<TasksPage> {
       socket.write('$globalUsername-giveTask\u0000');
       await socket.flush();
       print('Data sent to server: $globalUsername-giveTask\u0000');
-
-      // Listen for responses from the server
       socket.listen((data) {
         final response = String.fromCharCodes(data).trim();
         print('Response from server: $response');
@@ -61,7 +59,7 @@ class _TasksPageState extends State<TasksPage> {
       final socket = await Socket.connect('192.168.43.66', 8888);
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
       socket.write('$globalUsername-completedTask-$taskTitle\u0000');
-      await socket.flush(); // Ensure data is sent
+      await socket.flush();
       print('Completed task sent to server: $globalUsername-completedTask-$taskTitle\u0000');
       await socket.close();
     } catch (e) {

@@ -11,8 +11,8 @@ class NewsScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.cyan[700],
-          toolbarHeight: 5, // Set the desired height for the AppBar
-          elevation: 50, // Remove the shadow if desired
+          toolbarHeight: 5,
+          elevation: 50,
             automaticallyImplyLeading: false,
           bottom: TabBar(
             tabs: [

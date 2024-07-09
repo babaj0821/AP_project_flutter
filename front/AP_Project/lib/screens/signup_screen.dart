@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:ap_project/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ap_project/screens/signin_screen.dart';
-import 'package:ap_project/screens/user_profile_page.dart';
 import 'package:ap_project/theme/theme.dart';
 import 'package:ap_project/widgets/custom_scaffold.dart';
 import 'package:ap_project/student.dart';
@@ -26,42 +25,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future<void> _sendDataToServer(String id, String password, String name, String birthDate) async {
     try {
-      // Replace with your server's IP address and port
       final socket = await Socket.connect('192.168.43.66', 8888);
 
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
 
       socket.write('$globalUsername-sign-$id-$password-$name-$birthDate\u0000');
-      await socket.flush(); // Ensure data is sent
+      await socket.flush();
       print('Data sent to server: sign-$id-$password-$name-$birthDate\u0000');
-
-      // Listen for responses from the server
       socket.listen((data) {
         final response = String.fromCharCodes(data).trim();
-        print('Response from server: $response'); // Print the response for debugging
-
+        print('Response from server: $response');
         if (response == '1') {
           globalUsername = id;
-          // Navigate to the homepage on successful signup
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => HomeScreen()),
           );
         } else {
-          // Show error message if signup failed
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(response)),
           );
         }
       }, onDone: () {
         print('Connection closed by server');
-        socket.destroy(); // Close the socket after data is received
+        socket.destroy();
       }, onError: (error) {
         print('Socket error: $error');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Socket error: $error')),
         );
-        socket.destroy(); // Ensure the socket is closed on error
+        socket.destroy();
       });
     } catch (e) {
       print('Error: $e');
@@ -223,7 +216,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           if (value == null || value.isEmpty) {
                             return 'لطفا تاریخ تولد خود را وارد کنید';
                           }
-                          // Regular expression to check if the date is in the format YYYY-MM-DD
                           final regex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
                           if (!regex.hasMatch(value)) {
                             return 'تاریخ باید به صورت YYYY-MM-DD ';

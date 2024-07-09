@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'add_work_dialog.dart';
 import 'package:gif_view/gif_view.dart';
+import 'add_work_dialog.dart';
 
 class WorkPage extends StatefulWidget {
   @override
@@ -48,7 +48,6 @@ class _WorkPageState extends State<WorkPage> {
       showGif = true;
       _saveWorks();
 
-      // Hide the GIF after 3 seconds
       Future.delayed(Duration(seconds: 2), () {
         setState(() {
           showGif = false;
@@ -93,10 +92,13 @@ class _WorkPageState extends State<WorkPage> {
                       'To Do Works:',
                       style: TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    Image.asset(
-                      'assets/images/sad.jpg', // Replace with your image asset path
-                      height: 90.0, // Increase the image size
-                      width: 90.0,  // Increase the image size
+                    ClipOval(
+                      child: Image.asset(
+                        'assets/images/sad.jpg',
+                        height: 80.0,
+                        width: 80.0,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ],
                 ),
@@ -124,7 +126,7 @@ class _WorkPageState extends State<WorkPage> {
                     Row(
                       children: [
                         Text(
-                          'Completed Works',
+                          'Completed Works:',
                           style: TextStyle(color: Colors.green, fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         IconButton(
@@ -133,10 +135,13 @@ class _WorkPageState extends State<WorkPage> {
                         ),
                       ],
                     ),
-                    Image.asset(
-                      'assets/images/happy.jpg', // Replace with your image asset path
-                      height: 90.0, // Increase the image size
-                      width: 90.0,  // Increase the image size
+                    ClipOval(
+                      child: Image.asset(
+                        'assets/images/happy.jpg',
+                        height: 80.0,
+                        width: 80.0,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ],
                 ),
@@ -159,7 +164,7 @@ class _WorkPageState extends State<WorkPage> {
           if (showGif)
             Center(
               child: GifView.asset(
-                'assets/images/jessee.gif',
+                'assets/images/pooh.gif',
                 height: 400.0,
                 width: 400.0,
               ),
@@ -169,6 +174,9 @@ class _WorkPageState extends State<WorkPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _openAddWorkDialog,
         child: Icon(Icons.add),
+        backgroundColor: Colors.pink[300],
+        shape: CircleBorder(),
+        foregroundColor: Colors.white,
       ),
     );
   }

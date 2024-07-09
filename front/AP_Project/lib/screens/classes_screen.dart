@@ -15,13 +15,9 @@ class _CoursePageState extends State<CoursePage> {
       try {
         final socket = await Socket.connect('192.168.43.66', 8888);
         print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
-
-        // Send course code to the server
         socket.write('$globalUsername-course-$courseCode\u0000');
         await socket.flush();
         print('Data sent to server:402243039-course-$courseCode\u0000');
-
-        // Listen for responses from the server
         socket.listen((data) {
           final response = String.fromCharCodes(data).trim();
           print('Response from server: $response');
@@ -44,8 +40,6 @@ class _CoursePageState extends State<CoursePage> {
         }, onDone: () {
           print('Socket closed');
         });
-
-        // Close the socket after listening is complete
         await socket.done;
       } catch (e) {
         print('Error: $e');
@@ -101,6 +95,9 @@ class _CoursePageState extends State<CoursePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _addCourse,
         child: Icon(Icons.add),
+        backgroundColor: Colors.pink[300],
+        shape: CircleBorder(),
+        foregroundColor: Colors.white,
       ),
     );
   }

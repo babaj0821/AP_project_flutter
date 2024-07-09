@@ -10,9 +10,11 @@ class NewsTab extends StatefulWidget {
 
 class _NewsTabState extends State<NewsTab> {
   final List<Map<String, String>> newsList = [
-    {'url': 'https://www.tabnak.ir/fa/news/1246400'},
-    {'url': 'https://www.tabnak.ir/fa/cultural'},
-    {'url': 'https://www.tabnak.ir/fa/social'},
+    {'url': 'https://news.sbu.ac.ir/%D9%88%D8%B1%D8%B2%D8%B4%DB%8C'},
+    {'url': 'https://news.sbu.ac.ir/%D9%BE%D8%A7%D8%B1%DA%A9-%D8%B9%D9%84%D9%85-%D9%88-%D9%81%D9%86%D8%A7%D9%88%D8%B1%DB%8C'},
+    {'url': 'https://news.sbu.ac.ir/%D8%A7%D8%AF%D8%A7%D8%B1%DB%8C-%D9%88-%D8%B3%D8%A7%D8%B2%D9%85%D8%A7%D9%86%DB%8C'},
+    {'url': 'https://news.sbu.ac.ir/%D8%A2%D9%85%D9%88%D8%B2%D8%B4%DB%8C'},
+    {'url': 'https://news.sbu.ac.ir/%D8%AF%D8%A7%D9%86%D8%B4%D8%AC%D9%88%DB%8C%DB%8C'},
   ];
 
   @override

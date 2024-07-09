@@ -24,7 +24,6 @@ class _RankingsTabState extends State<RankingsTab> {
       await socket.flush();
       print('Data sent to server: $globalUsername-giveRankings\u0000');
 
-      // Listen for responses from the server
       socket.listen((data) {
         final response = String.fromCharCodes(data).trim();
         print('Response from server: $response');
@@ -63,9 +62,51 @@ class _RankingsTabState extends State<RankingsTab> {
     }
   }
 
+  Widget _buildRankings() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: _rankings.length,
+      itemBuilder: (context, index) {
+        return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          elevation: 5,
+          margin: EdgeInsets.symmetric(vertical: 8.0),
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: _getRankColor(index),
+              child: Text(
+                (index + 1).toString(),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            title: Text(
+              '${_rankings[index]['name']}',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            trailing: Text(
+              '${_rankings[index]['grade']}',
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(backgroundColor: Colors.pink[300],
+        title: Text('Rankings'),
+        centerTitle: true,
+         automaticallyImplyLeading: false,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -77,23 +118,7 @@ class _RankingsTabState extends State<RankingsTab> {
                 style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
             )
-                : ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: _rankings.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: _getRankColor(index),
-                      child: Text((index + 1).toString()),
-                    ),
-                    title: Text('${_rankings[index]['name']}'),
-                    trailing: Text('${_rankings[index]['grade']}'),
-                  ),
-                );
-              },
-            ),
+                : _buildRankings(),
           ],
         ),
       ),

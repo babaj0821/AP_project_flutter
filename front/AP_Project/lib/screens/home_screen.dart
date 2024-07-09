@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _logout() {
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => SignInScreen()),//new route
+      MaterialPageRoute(builder: (context) => SignInScreen()),
           (Route<dynamic> route) => false,//remove all previous routs
     );
   }
@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
     print('Building HomeScreen');
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.cyan[500],
-        automaticallyImplyLeading: false,//removing back button
+        automaticallyImplyLeading: false,
         title: Text(
           "دانشجویار",
           style: TextStyle(fontSize: 25, color: Colors.brown),
@@ -53,8 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.logout), // Changed icon to logout
-            onPressed: _logout, // Calls the logout function
+            icon: Icon(Icons.logout),
+            onPressed: _logout,
           ),
         ],
       ),
@@ -62,10 +62,10 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home,color: Colors.cyan[800],), label: 'سرا',),
-          BottomNavigationBarItem(icon: Icon(Icons.work,color: Colors.cyan[800]), label: 'تسک ها'),
+          BottomNavigationBarItem(icon: Icon(Icons.work,color: Colors.cyan[800]), label: 'تکالیف'),
           BottomNavigationBarItem(icon: Icon(Icons.school,color: Colors.cyan[800]), label: 'کلاسا'),
           BottomNavigationBarItem(icon: Icon(Icons.notifications,color: Colors.cyan[800]), label: 'خبرها'),
-          BottomNavigationBarItem(icon: Icon(Icons.work,color: Colors.cyan[800]), label: 'کارا'),
+          BottomNavigationBarItem(icon: Icon(Icons.work,color: Colors.cyan[800]), label: 'برنامه'),
           BottomNavigationBarItem(icon: Icon(Icons.person,color: Colors.cyan[800]), label: 'پروفایل'),
         ],
         currentIndex: _selectedIndex,
@@ -101,19 +101,19 @@ class _HomePageState extends State<HomePage> {
       final socket = await Socket.connect('192.168.43.66', 8888);
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
 
-      // Request summary data
+
       socket.write('$globalUsername-getSummary\u0000');
       await socket.flush();
-      // Request not done assignments data
+
       socket.write('$globalUsername-getNotDoneAssignments\u0000');
       await socket.flush();
-      // Request done assignments data
+
       socket.write('$globalUsername-getDoneAssignments\u0000');
       await socket.flush();
       socket.write('$globalUsername-getDaysLeft\u0000');
       await socket.flush();
 
-      // Listen for responses
+
       socket.listen((data) {
         final response = String.fromCharCodes(data).trim();
         if (response.startsWith('summary:')) {
@@ -151,8 +151,8 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             _buildSummarySection(),
-            SizedBox(height: 16.0),  // Reduced to 16.0 to make space for the days left row
-            _buildDaysLeftRow(),    // Added the new row here
+            SizedBox(height: 16.0),
+            _buildDaysLeftRow(),
             SizedBox(height: 32.0),
             _buildNotDoneAssignmentsSection(),
             SizedBox(height: 32.0),

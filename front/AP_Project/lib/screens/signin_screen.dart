@@ -3,10 +3,9 @@ import 'dart:io';
 import 'package:ap_project/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ap_project/screens/signup_screen.dart';
-import 'package:ap_project/screens/user_profile_page.dart';
 import 'package:ap_project/widgets/custom_scaffold.dart';
 import '../theme/theme.dart';
-import 'package:ap_project/student.dart'; // Import the globals file
+import 'package:ap_project/student.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -20,7 +19,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _studentIdController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool rememberPassword = true;
-  bool _passwordVisible = false; // Add this boolean variable
+  bool _passwordVisible = false;
 
   @override
   void dispose() {
@@ -44,16 +43,12 @@ class _SignInScreenState extends State<SignInScreen> {
           final response = String.fromCharCodes(data).trim();
           print('Response from server: $response');
           if (response == '1') {
-            // Update the global username variable on successful sign-in
             globalUsername = username;
-
-            // Navigate to the homepage on successful sign-in
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => HomeScreen()),
             );
           } else {
-            // Show error message if sign-in failed
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('wrong username or password')),
             );
@@ -152,7 +147,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       TextFormField(
                         controller: _passwordController,
-                        obscureText: !_passwordVisible, // Use the state variable here
+                        obscureText: !_passwordVisible,
                         obscuringCharacter: '*',
                         validator: (value) {
                           if (value == null || value.isEmpty) {

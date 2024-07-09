@@ -32,12 +32,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final socket = await Socket.connect('192.168.43.66', 8888);
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
 
-      // Send request for profile data
       socket.write('$globalUsername-profile\u0000');
       await socket.flush();
       print('Data request sent to server: profile-data\u0000');
 
-      // Listen for responses from the server
       socket.listen(
             (data) {
           final response = String.fromCharCodes(data).trim();
@@ -87,12 +85,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final socket = await Socket.connect('192.168.43.66', 8888);
       print('Connected to: ${socket.remoteAddress.address}:${socket.remotePort}');
 
-      // Send new password to the server
       socket.write('$globalUsername-update_password-$newPassword\u0000');
       await socket.flush();
       print('Password update sent to server: update-password-$newPassword\u0000');
 
-      // Listen for server response
+
       socket.listen(
             (data) {
           final response = String.fromCharCodes(data).trim();
@@ -156,10 +153,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         await socket.flush();
         print('Delete account request sent to server');
 
-        // Close the socket after sending the request
         socket.destroy();
 
-        // Navigate to signup page
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => SignUpScreen()),
@@ -176,9 +171,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Profile'),
-      // ),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -220,17 +212,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: Colors.black, // Set the desired color
                 ),),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green[300], // Red background for delete button
+                  backgroundColor: Colors.green[300],
                 ),
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _deleteAccount,
                 child: Text('Delete Account',style: TextStyle(
-                  color: Colors.black, // Set the desired color
+                  color: Colors.black,
                 ),),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[300], // Red background for delete button
+                  backgroundColor: Colors.red[300],
                 ),
               ),
             ],

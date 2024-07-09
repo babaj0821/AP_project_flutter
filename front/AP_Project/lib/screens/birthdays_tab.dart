@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
-import 'package:gif_view/gif_view.dart'; // Import gif_view package
 import 'package:ap_project/student.dart';
 
 class BirthdaysTab extends StatefulWidget {
@@ -13,14 +12,12 @@ class BirthdaysTab extends StatefulWidget {
 class _BirthdaysTabState extends State<BirthdaysTab> {
   final List<String> _birthdays = [];
   final ConfettiController _confettiController = ConfettiController(duration: const Duration(seconds: 10));
-  bool _showGif = true;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _confettiController.play();
-      _playGif();
     });
     _receiveBirthdaysFromServer();
   }
@@ -31,13 +28,6 @@ class _BirthdaysTabState extends State<BirthdaysTab> {
     super.dispose();
   }
 
-  Future<void> _playGif() async {
-    await Future.delayed(Duration(seconds: 6));
-    setState(() {
-      _showGif = false;
-    });
-  }
-
   Future<void> _receiveBirthdaysFromServer() async {
     try {
       final socket = await Socket.connect('192.168.43.66', 8888);
@@ -45,8 +35,6 @@ class _BirthdaysTabState extends State<BirthdaysTab> {
       socket.write('$globalUsername-giveBirthdays\u0000');
       await socket.flush();
       print('Data sent to server: $globalUsername-giveBirthdays\u0000');
-
-      // Listen for responses from the server
       socket.listen((data) {
         final response = String.fromCharCodes(data).trim();
         print('Response from server: $response');
@@ -81,20 +69,6 @@ class _BirthdaysTabState extends State<BirthdaysTab> {
       ),
       body: Stack(
         children: [
-          Positioned.fill(
-            child: Visibility(
-              visible: _showGif,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: GifView.asset(
-                  'assets/images/rick.gif', // Replace with the path to your GIF file
-                  width: 400,
-                  height: 800,
-                  fit: BoxFit.cover, // Adjust as needed
-                ),
-              ),
-            ),
-          ),
           SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -144,9 +118,9 @@ class _BirthdaysTabState extends State<BirthdaysTab> {
               blastDirection: pi / 2, // Shoot straight up
               emissionFrequency: 0.05, // How often it should emit
               numberOfParticles: 20, // Number of particles to emit
-              gravity: 0.1, // Gravity - or fall speed
+              gravity: 0.1, // fall speed
               shouldLoop: false, // Ensure it stops after the duration
-              colors: const [Colors.blue, Colors.pink, Colors.orange, Colors.purple, Colors.yellow], // Colors to use
+              colors: const [Colors.blue, Colors.pink, Colors.orange, Colors.purple, Colors.yellow],
             ),
           ),
         ],
