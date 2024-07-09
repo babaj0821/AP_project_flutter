@@ -203,10 +203,11 @@ class ClientHandler implements Runnable {
         for(int i = 0 ; i < s.getEnrollmentCourses().size() ; i++){
             numunit+= s.getEnrollmentCourses().get(i).getNumberOfUnits();
         }
-        data.append("-" + numunit + "-" + s.findTotalAvg() + "-" + s.getPassword());
+        data.append("-" + numunit + "-" + String.format("%.2f" , s.findTotalAvg()) + "-" + s.getPassword());
         return data.toString();
     }
-    public synchronized String updatepassword(String studentID  ,String passeord){
+    public synchronized String updatepassword(String studentID
+      ,String passeord){
         Student s = findStudent(studentID);
         if (passwordchecker(passeord, studentID)) {
             s.setPassword(passeord);

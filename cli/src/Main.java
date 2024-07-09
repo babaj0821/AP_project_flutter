@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import main.*;
@@ -178,10 +179,12 @@ public class Main {
                             String names = input.next();
                             System.out.println("enter the password");
                             String pass = input.next();
+                            System.out.println("enter the birth day(yyyy-mm-dd)");
+                            String birth = input.next();
                             System.out.print("\033[H\033[2J");
                             System.out.flush();
                             try {
-                                admin.addNewStudent(id ,names , pass);
+                                admin.addNewStudent(id ,names , pass , LocalDate.parse(birth));
                             } catch (Exception e) {
                                 System.out.println(e);
                                 databasehandler.writedata();

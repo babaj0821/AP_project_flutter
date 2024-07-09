@@ -1,6 +1,18 @@
-imanbabjani/402243039/2019-07-08/Alibaba1234/5/15.5/3/16.5/2/14.0/
-5/tamrin1phy/false/5/tamrin2phy/false/5/tamrin3phy/false/2/tamrin1ap/false/2/tamrin8ap/false/2/tamrin6ap/false/3/tamrin10madar/false/
-mahdikarimi/402243091/2019-07-08/Karim1234/5/19.5/3/19.5/2/18.0/
-5/tamrin1phy/false/5/tamrin2phy/false/5/tamrin3phy/false/2/tamrin1ap/true/2/tamrin8ap/true/2/tamrin6ap/true/3/tamrin10madar/true/
-zhinafathi/402243127/2004-07-08/Iman1234/5/15.5/3/19.5/2/18.0/
-5/tamrin1phy/true/5/tamrin2phy/true/5/tamrin3phy/true/2/tamrin1ap/true/2/tamrin8ap/true/2/tamrin6ap/true/3/tamrin10madar/false/
+iman babjani/402243039/2019-07-08/Alibaba1234/5/15.5/3/16.5/2/14.0/1/16.0/
+5/tamrin1phy/false/5/tamrin2phy/false/5/tamrin3phy/false/2/tamrin1ap/false/2/tamrin8ap/false/2/tamrin6ap/false/3/tamrin10madar/false/1/signal1/true/1/signal2/true/
+mahdikarimi/402243091/2019-07-08/Karim1234/5/19.5/3/19.5/2/18.0/1/17.0/
+5/tamrin1phy/false/5/tamrin2phy/false/5/tamrin3phy/false/2/tamrin1ap/true/2/tamrin8ap/true/2/tamrin6ap/true/3/tamrin10madar/true/1/signal1/true/1/signal2/false/
+zhina fathi/402243127/2004-07-08/Iman1234/5/15.5/3/19.5/2/18.0/4/20.0/1/19.0/
+5/tamrin1phy/true/5/tamrin2phy/true/5/tamrin3phy/true/2/tamrin1ap/true/2/tamrin8ap/true/2/tamrin6ap/true/3/tamrin10madar/false/4/graph1/true/4/graph2/false/1/signal1/false/1/signal2/false/
+ali soltani/402243000/2004-07-08/Iman1234/4/16.0/1/15.0/
+4/graph1/false/4/graph2/false/1/signal1/false/1/signal2/false/
+mamad mamady/402243001/2004-07-09/Aliali4321/4/15.0/
+4/graph1/false/4/graph2/true/
+sadra homaii/402243002/2004-07-09/Saddd1234/4/16.0/
+4/graph1/false/4/graph2/false/
+ali alavi/402243006/2004-07-09/Alavi1234/4/20.0/
+4/graph1/false/4/graph2/true/
+taghi taghavi/402243555/2000-07-09/Taghavi1234/
+
+gazal/402243008/2019-05-05/Iman1235/
+

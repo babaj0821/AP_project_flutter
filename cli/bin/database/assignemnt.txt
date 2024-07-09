@@ -7,3 +7,7 @@
 5/tamrin2phy/2024-10-09T14:14:14/phy for new students
 3/tamrin3madar/2024-07-10T14:14:14/and va or gate
 5/tamrin3phy/2024-10-05T15:15:15/phy for the elect
+4/graph1/2024-07-25T15:15:15/first
+4/graph2/2024-07-31T15:15:15/second
+1/signal1/2024-08-08T15:15:15/first
+1/signal2/2024-08-30T15:15:15/second

@@ -1,5 +1,6 @@
 
 package main;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -226,7 +227,7 @@ public class Admin {
         }
     }
 
-    public void addNewStudent(String id ,String name , String pass) {
+    public void addNewStudent(String id ,String name , String pass , LocalDate birth) {
         try {
             Student s = findstudentObj(id);
             if (s != null) {
@@ -235,6 +236,7 @@ public class Admin {
                 Student student = new Student(id);
                 student.setName(name);
                 student.setPassword(pass);
+                student.setBirth(birth);
                 students.add(student);
             }
         } catch (Exception e) {
